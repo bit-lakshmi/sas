@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>SAS Gantt Chart</title>
+	<meta name="description" content="A Gantt chart demo with custom time scale (weekends are hidden), filtering and zooming capabilities."/>
+	<meta name="keywords" content="javascript, gantt chart, gantt, charting, library, ajax, ui, project, task, management, zooming, filtering, visualization, demo"/>
+
+	<script src="assets/plugins/dxhtmlgantt/codebase/dhtmlxgantt-pro.js" type="text/javascript" charset="utf-8"></script>
+	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_marker.js?v=5.2.0"></script>
+	<link rel="stylesheet" href="assets/plugins/dxhtmlgantt/codebase/skins/dhtmlxgantt_material.css?v=5.2.0" type="text/css" media="screen" title="no title" charset="utf-8">
+	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_tooltip.js"></script>  
+	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_undo.js?v=5.2.0"></script>
+	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_keyboard_navigation.js?v=5.2.0"></script>
+	<style>
+			html, body {
+		padding: 0px;
+		margin: 0px;
+		height: 100%;
+			}
+
+			.status_line {
+				background-color: #0ca30a;
+			}
+
+			.weekend {
+				background: #ffd3c6;
+			}
+
+			.important{
+			    border:2px solid red;
+			    color:red;
+			    background:red;
+			}
+			.important .gantt_task_progress{
+			    background: #ff5956;
+			}
+
+			.gantt_task_progress {
+				text-align: left;
+				padding-left: 10px;
+				box-sizing: border-box;
+				color: white;
+				font-weight: bold;
+			}
+
+			.gantt_task_line.gantt_project{
+				color:white;
+			}
+
+			.gantt_side_content{
+				color:#333;
+			}
+
+			.summary-bar{
+				font-weight: bold;
+			}
+
+			.gantt_resource_task .gantt_task_content{
+				color:inherit;
+			}
+
+			.gantt_resource_task .gantt_task_progress{
+				background-color:rgba(33,33,33,0.3);
+			}
+
+			.gantt_cell:nth-child(1) .gantt_tree_content{
+				border-radius: 16px;
+				width: 100%;
+				height: 80%;
+				margin: 5% 0;
+				line-height: 230%;
+			}
+
+	</style>
+</head>
+<body>
+<input type="button" value="collapse all" onclick="gantt.collapseAll()"/>
+<input type="button" value="expand all" onclick="gantt.expandAll()"/>
+<input value="Undo" type="button" onclick='gantt.undo()' style='margin:20px;'>
+<input value="Redo" type="button" onclick='gantt.redo()' style='margin:20px;'>
+<div id="gantt_here" style='width:100%; height:100%;'></div>
+<script>
+
+	gantt.message({
+		text: "<p>Keyboard shortcuts:</p>" +
+
+		"<b>Global</b>" +
+		"<ul>" +
+		"<li><b>Tab</b> - select gantt</li>" +
+		"<li><b>Alt + Up/Down/Left/Right</b> - scroll gantt</li>" +
+		"<li><b>Ctrl + Enter</b> - create new task</li>" +
+		"<li><b>Ctrl + Z</b> - undo</li>" +
+		"<li><b>Ctrl + R</b> - redo</li>" +
+		"</ul>" +
+		"<b>Header Cells</b>" +
+		"<ul>" +
+		"<li><b>Left/Right</b> - navigate over cells</li>" +
+		"<li><b>Home/End</b> - navigate to the first/last column</li>" +
+		"<li><b>Down</b> - navigate to task rows</li>" +
+		"<li><b>Space/Enter</b> - click header</li>" +
+		"</ul>" +
+		"<b>Task rows</b>" +
+		"<ul>" +
+		"<li><b>Up/Down</b> - navigate rows</li>" +
+		"<li><b>PageDown/PageUp</b> - navigate to the first/last task</li>" +
+		"<li><b>Space</b> - select task</li>" +
+		"<li><b>Ctrl + Enter</b> - create new task</li>" +
+		"<li><b>Delete</b> - delete selected task</li>" +
+		"<li><b>Enter</b> - open the lightbox</li>" +
+		"<li><b>Ctrl + Left/Right</b> - expand, collapse tree</li>" +
+		"</ul>",
+		expire: -1
+	});
+
+	gantt.serverList("staff", [
+		{key: 0, label: "", backgroundColor:"", textColor:""},
+		{key: 1, label: "Ajit", backgroundColor:"#03A9F4", textColor:"#FFF"},
+		{key: 2, label: "Sachin", backgroundColor:"#f57730", textColor:"#FFF"},
+		{key: 3, label: "Sajid", backgroundColor:"#e157de", textColor:"#FFF"},
+		{key: 4, label: "Comp", backgroundColor:"#78909C", textColor:"#FFF"},
+		{key: 5, label: "Rigging", backgroundColor:"#78909C", textColor:"#FFF"},
+		{key: 6, label: "Model/Textur", backgroundColor:"#78909C", textColor:"#FFF"},
+		{key: 7, label: "Animation", backgroundColor:"#8D6E63", textColor:"#FFF"}
+	]);
+
+	gantt.serverList("priority", [
+		{key: 0, label: ""},
+		{key: 1, label: "Not Started"},
+		{key: 2, label: "Working"},
+		{key: 3, label: "Done"}
+	]);
+
+	var labels = gantt.locale.labels;
+	labels.column_priority = labels.section_priority = "Status";
+	labels.column_owner = labels.section_owner = "Owner";
+
+	function byId(list, id) {
+		for (var i = 0; i < list.length; i++) {
+			if (list[i].key == id)
+				return list[i].label || "";
+		}
+		return "";
+	}
+
+	gantt.config.lightbox.sections = [
+		{name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
+		{name: "priority", height: 22, map_to: "priority", type: "select", options: gantt.serverList("priority")},
+		{name: "owner", height: 22, map_to: "owner_id", type: "select", options: gantt.serverList("staff")},
+		{name: "time", type: "duration", map_to: "auto"}
+	];
+
+	gantt.templates.rightside_text = function(start, end, task){
+		return byId(gantt.serverList('staff'), task.owner_id);
+	};
+
+
+	gantt.templates.grid_row_class =
+		gantt.templates.task_row_class =
+			gantt.templates.task_class = function (start, end, task) {
+		var css = [];
+		if (task.$virtual || task.type == gantt.config.types.project)
+			css.push("summary-bar");
+
+		if(task.owner_id){
+			css.push("gantt_resource_task gantt_resource_" + task.owner_id);
+		}
+
+		return css.join(" ");
+	};
+
+	gantt.attachEvent("onLoadEnd", function(){
+		var styleId = "dynamicGanttStyles";
+		var element = document.getElementById(styleId);
+		if(!element){
+			element = document.createElement("style");
+			element.id = styleId;
+			document.querySelector("head").appendChild(element);
+		}
+		var html = [];
+		var resources = gantt.serverList("staff");
+
+		resources.forEach(function(r){
+			html.push(".gantt_task_line.gantt_resource_" + r.key + "{" +
+				"background-color:"+r.backgroundColor+"; " +
+				"color:"+r.textColor+";" +
+			"}");
+			html.push(".gantt_row.gantt_resource_" + r.key + " .gantt_cell:nth-child(1) .gantt_tree_content{" +
+				"background-color:"+r.backgroundColor+"; " +
+				"color:"+r.textColor+";" +
+				"}");
+		});
+		element.innerHTML = html.join("");
+	});
+
+	var date_to_str = gantt.date.date_to_str(gantt.config.task_date);
+
+	gantt.config.start_date = new Date(2018, 8, 1);
+	gantt.config.end_date = new Date(2018, 9, 15);
+
+
+	var today = new Date();
+	gantt.addMarker({
+		start_date: today,
+		css: "today",
+		text: "Today",
+		title: "Today: " + date_to_str(today)
+	});
+
+	var start = new Date(2018, 8, 1);
+	gantt.addMarker({
+		start_date: start,
+		css: "status_line",
+		text: "Start project",
+		title: "Start project: " + date_to_str(start)
+	});
+
+	var toggleCritical = function () {
+		if (gantt.config.highlight_critical_path)
+			gantt.config.highlight_critical_path = !true;
+		else
+			gantt.config.highlight_critical_path = true;
+		gantt.render();
+	}
+	
+	gantt.config.columns = [
+		{name: "owner", width: 80, align: "center", template: function (item) {
+				return byId(gantt.serverList('staff'), item.owner_id)}},
+		{name: "wbs", label: "WBS", width: 40, template: gantt.getWBSCode, "resize": true},
+		{name: "text", label: "Task name", tree: true, width: 170, "resize": true, min_width: 10},
+		{name: "start_date", align: "center", width: 90, "resize": true},
+		{name: "duration", align: "center", width: 80, "resize": true},
+		{name: "priority", width: 80, align: "center", template: function (item) {
+				return byId(gantt.serverList('priority'), item.priority)}},
+		{name: "add", width: 40}
+	];
+
+	/*gantt.templates.rightside_text = function (start, end, task) {
+		if (task.type == gantt.config.types.milestone)
+			return task.text + " / ID: #" + task.id;
+		return "";
+	};*/
+
+	gantt.config.scale_unit = "day";
+	gantt.config.date_scale = "%D, %d";
+	gantt.config.duration_unit = "day";
+	gantt.config.start_on_monday = true;
+
+	gantt.config.order_branch = true;
+	gantt.config.order_branch_free = true;
+
+	gantt.config.sort = true; 
+
+	gantt.config.auto_types = true;
+	gantt.config.drag_project = true;
+
+
+	
+	//gantt.config.static_background = true;
+
+	gantt.config.scale_height = 20*3;
+	
+	var weekScaleTemplate = function(date){
+		var dateToStr = gantt.date.date_to_str("%d %M");
+		var weekNum = gantt.date.date_to_str("(week %W)");
+		var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
+		return dateToStr(date) + " - " + dateToStr(endDate) + " " + weekNum(date);
+	};
+
+
+	gantt.config.subscales = [
+		{unit: "month", step: 1, date: "%F, %Y"},
+		{unit: "week", step: 1, template: weekScaleTemplate}
+	];
+
+	gantt.config.work_time = true;
+	gantt.setWorkTime({ hours:[11,20] });
+	gantt.setWorkTime({ day:0, hours:false });
+	gantt.setWorkTime({ day:6, hours:true });
+
+
+	gantt.templates.scale_cell_class = function (date) {
+		if (date.getDay() == 0) {
+			return "weekend";
+		}
+	};
+
+	gantt.templates.task_cell_class = function(item,date){
+	    if(date.getDay()==0){ 
+	        return "weekend" ;
+	    }
+	};
+
+
+	gantt.templates.tooltip_text = function(start,end,task){
+	    return "<b>Task:</b> "+task.text+"<br/><b>Duration:</b> " + task.duration;
+	};
+
+	gantt.templates.progress_text = function (start, end, task) {
+		return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
+	};
+
+	gantt.collapseAll = function(){
+	  gantt.eachTask(function(task){
+	    task.$open = false;
+	  });
+	  gantt.render();
+	}
+
+	gantt.expandAll = function(){
+	  gantt.eachTask(function(task){
+	    task.$open = true;
+	  });
+	  gantt.render();
+	}
+
+	/*gantt.templates.task_class=function(start,end,task){
+	    if(task.progress > 0.2){
+	         return "";
+	    }else{
+	        return "important";
+	    }
+	};*/
+
+
+	gantt.config.xml_date = "%Y-%m-%d %H:%i";
+
+	gantt.init("gantt_here");
+
+	gantt.load('data/gannt-data.php');
+
+	var dp = new gantt.dataProcessor('data/gannt-data.php'); 
+	dp.init(gantt);
+	//gantt.parse(tasks);
+
+</script>
+</body>
