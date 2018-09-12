@@ -1,0 +1,8 @@
+git init
+git commit -m "first commit"
+git config --global user.email "amtecworld76652@gmail.com"
+git config --global user.name "A6i8"
+git remote add origin https://github.com/A6i8/sas.git
+git config --global http.proxy http://192.168.23.90:808
+git config --global --get http.proxy
+git push -u origin master
