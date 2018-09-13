@@ -1,8 +1,9 @@
 /* Write your custom CSS here */
 
 .ochip {
-	margin-bottom: -10px !important;
+	margin-bottom: -2px !important;
 	margin-right: -10px !important;
+	margin-top: -2px !important;
 }
 
 .ScrollStyle
@@ -13,4 +14,16 @@
 
 #tab_btn{
 	cursor: pointer;
+}
+
+.dataTable th, .dataTable td {
+    padding: 5px 5px!important;
+}
+
+.side-nav ul ul li a, .side-nav.fixed ul ul li a {
+	margin: -10px !important;
+}
+
+td, th {
+    padding: 2px 2px !important;
 }
