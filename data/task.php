@@ -25,7 +25,8 @@ if ($result->rowCount() > 0) {
                     pCode: "<?php echo $P_DATA[0]['pcode'] ?>",
                     pName: "<?php echo $P_DATA[0]['pname'] ?>",
                     pDiskName: "<?php echo $P_DATA[0]['pdisk_name'] ?>",
-                    mtype: "task"
+                    mtype: "task",
+                    sname: ""
 
     };
 </script>
@@ -37,7 +38,7 @@ if ($result->rowCount() > 0) {
                                     $result = $conn->query("SELECT COUNT(status) FROM tasks WHERE pcode='{$PCODE}' AND status = '3' GROUP BY status");
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                                printf('<div id="table_search" data-search="working" class="chip light-blue accent-3 tooltipped" style="color: white;cursor: pointer;">%s</div>', $row['COUNT(status)']);
-                                    } 
+                                    }
                                 	$result = $conn->query("SELECT COUNT(status) FROM tasks WHERE pcode='{$PCODE}' AND status = '4' GROUP BY status");
 										while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 										       printf('<div id="table_search" data-search="correction" class="chip red tooltipped" style="color: white;cursor: pointer;">%s</div>', $row['COUNT(status)']);
@@ -69,14 +70,14 @@ if ($result->rowCount() > 0) {
                                     $result = $conn->query("SELECT bshots FROM projects WHERE pcode='{$PCODE}'");
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                             $bshots = intval($row['bshots']);
-                                         
+
                                     }
 
                                     $subshots = 0;
                                     $result = $conn->query("SELECT subshots FROM projects WHERE pcode='{$PCODE}'");
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                             $subshots = intval($row['subshots']);
-                                         
+
                                     }
 
 
@@ -91,16 +92,16 @@ if ($result->rowCount() > 0) {
                                     $result = $conn->query("SELECT total_shots FROM projects WHERE pcode='{$PCODE}'");
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                             $tshots = intval($row['total_shots']);
-                                         
+
                                     }
                                     $tshots = $tshots - $subshots;
-                                     printf('<div id="bshotsupdate" data-pcode="%s" class="chip  grey" style="color: white;cursor: pointer;">%s</div>',$PCODE, (abs(($tshots - $ani_done) + $bshots)));  
-                                    
+                                     printf('<div id="bshotsupdate" data-pcode="%s" class="chip  grey" style="color: white;cursor: pointer;">%s</div>',$PCODE, (abs(($tshots - $ani_done) + $bshots)));
 
-                                    ?> 
+
+                                    ?>
                                 		<a href="#task_reorder" class="card-refresh"><i id="t_task_reorder" class="material-icons">reorder</i></a>
                                         <a href="#add_task" class="modal-trigger card-refresh"><i id="t_add_task" data-pname="<?php echo $P_DATA[0]['pname'] ?>" data-pcode="<?php echo $P_DATA[0]['pcode'] ?>" class="modal-trigger material-icons">playlist_add</i></a>
-                                        
+
                                 </div>
                                     <span class="card-title"><?php echo $P_DATA[0]['pname'] ?></span>
                                 <table id="taskstable" class="display responsive-table datatable-example">
@@ -128,28 +129,30 @@ if ($result->rowCount() > 0) {
                                     </tfoot>
                                     <tbody>
                                     <?php
-                                    foreach ($T_DATA as $TASK => $value) {
-                                    	echo "<tr>";
+                                    foreach ($T_DATA as $TASK => $value)
+                                    {
+                                    	//echo '<tr class="current-task" data->';
+                                      printf('<tr class="current-task" data-psname="%s" >', $value['sname']);
                                     	printf("<td id='fpath' data-host='%s' data-pdiskn='%s' data-psname='%s' style='cursor: pointer;'>%s</td>", $_SESSION['user_data']['host'],$P_DATA[0]['pdisk_name'],$value['sname'], $value['sname']);
                                     	printf("<td>%s</td>", $value['sframe']);
                                         echo "<td id='edit_task' data-sid=".$value['sname']." data-pcode=".$value['pcode']."  style='cursor: pointer;'>";
                                     	foreach ($U_DATA as $key => $u_value) {
-											if($u_value['id'] ==  $value['auser']) {
-                                                echo $u_value['dname'];
-											}
+                  											if($u_value['id'] ==  $value['auser']) {
+                                                                  echo $u_value['dname'];
+                  											}
 
-										}
-                                        echo "</td>";                            	
+                  										}
+                                      echo "</td>";
                                     	printf("<td id='edit_task' data-sid=".$value['sname']." data-pcode=".$value['pcode']."  style='cursor: pointer;'><div class='chip ochip %s' style='color: white;'>%s</div></td>",$S_DATA[$value['status']][1], $S_DATA[$value['status']][0]);
                                     	printf("<td>%s</td>", $value['correction']);
                                     	printf("<td><div class='chip ochip %s' style='color: white;'>%s</div></td>",$S_DATA[$value['c_status']][1], $S_DATA[$value['c_status']][0]);
-                                        echo "<td>";
+                                      echo "<td>";
                                     	foreach ($U_DATA as $key => $c_value) {
-											if($c_value['id'] == $value['cdoneby']) {
-												echo $c_value['dname'];
-											}
-										}
-                                        echo "</td>"; 
+                  											if($c_value['id'] == $value['cdoneby']) {
+                  												echo $c_value['dname'];
+                  											}
+                  										}
+                                      echo "</td>";
                                     	echo "</tr>";
 
                                     }

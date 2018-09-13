@@ -66,7 +66,7 @@ var sttable = '';
         var ugroup = $(this).data("ugroup");
         var url = "";
         Cookies.set('cpcode', $(this).data("pcode"));
-        
+
         if(ugroup == '1'){
             url = "/data/task?pcode=" + $(this).data("pcode");
             Cookies.set('cpage', 'task');
@@ -74,7 +74,7 @@ var sttable = '';
             url = "/data/rig?pcode=" + $(this).data("pcode");
             Cookies.set('cpage', 'rig');
         }
-        
+
         console.log(url);
         $.get(url, function(data){
             $("#page").html(data);
@@ -82,7 +82,7 @@ var sttable = '';
             if (sttable != "") {
                 sttable.destroy();
             }
-            setTimeout(function(){ 
+            setTimeout(function(){
             sttable = $('#taskstable').DataTable({
                 scrollY:        '50vh',
                 scrollCollapse: true,
@@ -97,7 +97,7 @@ var sttable = '';
                         sFirst: '<i class="material-icons">chevron_left</i>',
                         sPrevious: '<i class="material-icons">chevron_left</i>',
                         sNext: '<i class="material-icons">chevron_right</i>',
-                        sLast: '<i class="material-icons">chevron_right</i>' 
+                        sLast: '<i class="material-icons">chevron_right</i>'
                 }
                 }
             });
@@ -118,7 +118,7 @@ $j(document).ready(function() {
         if (sttable != "") {
                 sttable.destroy();
         }
-        setTimeout(function(){ 
+        setTimeout(function(){
 
 
            sttable = $('#taskstable').DataTable({
@@ -135,7 +135,7 @@ $j(document).ready(function() {
                         sFirst: '<i class="material-icons">chevron_left</i>',
                         sPrevious: '<i class="material-icons">chevron_left</i>',
                         sNext: '<i class="material-icons">chevron_right</i>',
-                        sLast: '<i class="material-icons">chevron_right</i>' 
+                        sLast: '<i class="material-icons">chevron_right</i>'
                 }
                 }
             });
@@ -169,7 +169,7 @@ $j(document).ready(function() {
         if(Cookies.get('cpcode') == ''){
             loadpage(Cookies.get('cpage'));
         }else {
-            j_loadtask(Cookies.get('cpcode'), Cookies.get('cpage')); 
+            j_loadtask(Cookies.get('cpcode'), Cookies.get('cpage'));
         }
         $.getJSON('http://sas.com:8082/api/jobs?States=2',function(jd){
             $("#ded_suspe").html(jd.length);
@@ -181,7 +181,7 @@ $j(document).ready(function() {
             $("#ded_error").html(jd.length);
         });
      }
-    
+
     setInterval(function(){
         $j.get("/data/functions?fname=isupdate", function(data){
             data = jQuery.parseJSON(data);
@@ -201,7 +201,7 @@ $j(document).ready(function() {
             console.log(data);
         })
      }
-     
+
      loadpage("dashboard");
 
      $j(document).on('click', '#pageload', function() {
@@ -333,6 +333,13 @@ $j(document).ready(function() {
         //$j('#textmodel').modal('open');
      })
 
+     $j(document).on('mouseenter', '.current-task', function() {
+        var psname = $(this).data(psname);
+        projectData.sname = psname.psname;
+      })
+
+
+
     $j(document).on('click', '#edit_mrig', function() {
         $.ajax({
             type: "POST",
@@ -387,7 +394,7 @@ $j(document).ready(function() {
      })
 
 
-    
+
 
     $j(document).on('click', '#updatesidebar', function() {
         console.log("ok");
@@ -428,8 +435,8 @@ $j(document).ready(function() {
                         });
                         updateui();
                     });
-                    
-                    
+
+
                 }
                 else {
                     swal("Error !", "System error occurred!! please try again after sometime", "error");
@@ -440,7 +447,7 @@ $j(document).ready(function() {
 
 
 
-    
+
 
     $j(document).on('click', '#fpath', function() {
         $('#task_modal').modal().modal('close');
@@ -612,7 +619,7 @@ $j(document).ready(function() {
 
             if (data === '1') {
                 updateui();
-                
+
             }
             else {
                 console.log(data);
@@ -640,7 +647,7 @@ $j(document).ready(function() {
             {
                 if (data === '1') {
                     updateui();
-                    
+
                 }
                 else {
                     console.log(data);
@@ -675,7 +682,7 @@ $j(document).ready(function() {
                             swal("Error !", "System error occurred!! please try again after sometime", "error");
                         }
                     }
-                });        
+                });
         } else {
 
             swal("Error !", "Password not matched", "error");
@@ -693,7 +700,7 @@ $j(document).ready(function() {
             var newdlogs = olddashlogs + data;
             $("#dashlogs").html(newdlogs);
             var newloadmoreby = Number($("#logloadmoreby").val())+10;
-            $("#logloadmoreby").val(newloadmoreby);       
+            $("#logloadmoreby").val(newloadmoreby);
         })
      })
 

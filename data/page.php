@@ -5,7 +5,7 @@ if(!isset($_GET["pname"])) {
 	exit;
 }
 switch ($_GET["pname"]) {
-	case 'dashboard': 
+	case 'dashboard':
                         if ($_SESSION['user_data']['id'] == '2' || $_SESSION['user_data']['id'] == '6' || $_SESSION['user_data']['id'] == '7') {
                         $result = $conn->query("SELECT * FROM `tasks` WHERE auser = '{$_SESSION['user_data']['id']}' OR cdoneby = '{$_SESSION['user_data']['id']}'");
                         if ($result->rowCount() > 0) {
@@ -30,9 +30,9 @@ switch ($_GET["pname"]) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php 
+                                    <?php
                                     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                                        echo "<tr>";
+                                                        printf('<tr class="current-task" data-psname="%s" >', $row['sname']);
                                                         echo "<td>{$row['pcode']}</td>";
                                                         printf("<td id='edit_task' data-sid=".$row['sname']." data-pcode=".$row['pcode']."  style='cursor: pointer;'>%s</td>", $row['sname']);
                                                         printf("<td id='edit_task' data-sid=".$row['sname']." data-pcode=".$row['pcode']."  style='cursor: pointer;'>%s</td>", $row['correction']);
@@ -46,24 +46,24 @@ switch ($_GET["pname"]) {
 
                                                             }
                                                         } else{
-                                                            
+
                                                             foreach ($U_DATA as $key => $u_value) {
                                                                 if ($row['cdoneby'] !== "") {
                                                                     if($u_value['id'] ==  $row['cdoneby']) {
                                                                         printf('<td id="corupdate" data-pcode="%s" data-sname="%s"><a class="waves-effect waves-light btn %s">%s</a></td>',$row['pcode'],$row['sname'], "for Review", $S_DATA[$row['c_status']][0]);
                                                                         echo "<td>" . $u_value['dname'] . "</td>";
-                                                                    } 
-                                                                    
+                                                                    }
+
                                                                 }else {
                                                                    if($u_value['id'] ==  $row['auser']) {
                                                                     printf("<td id='edit_task' data-sid=".$row['sname']." data-pcode=".$row['pcode']."  style='cursor: pointer;'><div class='chip ochip %s' style='color: white;'>%s</div></td>",$S_DATA[$row['status']][1], $S_DATA[$row['status']][0]);
                                                                         echo "<td>" . $u_value['dname'] . "</td>";
-                                                                    } 
+                                                                    }
                                                                 }
-                                                                    
+
 
                                                             }
-                                                        }                                                                                                          
+                                                        }
                                                         echo "</tr>";
                                         }
 
@@ -81,7 +81,7 @@ switch ($_GET["pname"]) {
                                     <span class="card-title">Todo List</span>
                                 <table class="responsive-table bordered">
                                     <thead>
-                                        <tr><?php 
+                                        <tr><?php
                                             switch ($_SESSION['user_data']['ugroup']) {
                                                 case '1':
                                                         ?>
@@ -118,7 +118,7 @@ switch ($_GET["pname"]) {
                                                 if ($result->rowCount() > 0) {
                                                     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                                         if ($row['auser'] == $_SESSION['user_data']['id'] || $row['cdoneby'] == $_SESSION['user_data']['id']) {
-                                                            echo "<tr>";
+                                                            printf('<tr class="current-task" data-psname="%s" >', $row['sname']);
                                                             echo "<td>{$row['pcode']}</td>";
                                                             printf("<td id='fpath' data-host='%s' data-pdiskn='%s' data-psname='%s' style='cursor: pointer;'>%s</td>", $_SESSION['user_data']['host'],getprojectdata('fpath', $row['pcode']),$row['sname'], $row['sname']);
                                                             printf('<td>%s</td>', $row['correction']);
@@ -131,24 +131,24 @@ switch ($_GET["pname"]) {
 
                                                                 }
                                                             }else{
-                                                                
+
                                                                 foreach ($U_DATA as $key => $u_value) {
                                                                     if ($row['cdoneby'] !== "") {
                                                                         if($u_value['id'] ==  $row['cdoneby']) {
                                                                             printf("<td id='edit_task' data-sid=".$row['sname']." data-pcode=".$row['pcode']."  style='cursor: pointer;'><div class='chip ochip %s' style='color: white;'>%s</div></td>",$S_DATA[$row['c_status']][1], $S_DATA[$row['c_status']][0]);
                                                                             echo "<td>" . $u_value['dname'] . "</td>";
-                                                                        } 
-                                                                        
+                                                                        }
+
                                                                     }else {
                                                                        if($u_value['id'] ==  $row['auser']) {
                                                                         printf("<td id='edit_task' data-sid=".$row['sname']." data-pcode=".$row['pcode']."  style='cursor: pointer;'><div class='chip ochip %s' style='color: white;'>%s</div></td>",$S_DATA[$row['status']][1], $S_DATA[$row['status']][0]);
                                                                             echo "<td>" . $u_value['dname'] . "</td>";
-                                                                        } 
+                                                                        }
                                                                     }
-                                                                        
+
 
                                                                 }
-                                                            }                                                                                                          
+                                                            }
                                                             echo "</tr>";
 
                                                         }
@@ -160,10 +160,10 @@ switch ($_GET["pname"]) {
                                                 $result = $conn->query("SELECT *  FROM `mrig` WHERE mode = '2' OR texturing = '2' OR rig = '2'");
                                                 if ($result->rowCount() > 0) {
                                                     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                                        echo "<tr>";
+                                                        printf('<tr class="current-task" data-psname="%s" >', $row['sname']);
                                                         echo "<td>{$row['pcode']}</td>";
                                                         printf("<td id='fpath' data-host='%s' data-pdiskn='%s' data-psname='%s' style='cursor: pointer;'>%s</td>", $_SESSION['user_data']['host'],getprojectdata('fpath', $row['pcode']),$row['aname'], $row['aname']);
-                                                        
+
                                                         $sql_col = "mode";
                                                         if($row[$sql_col] == 1){
                                                             printf('<td id="proupdate" data-ugroup="2" data-pcode="%s" data-colname="%s" data-colvalue="0" data-aname="%s"><a class="waves-effect waves-light btn green">Done</a></td>',$row['pcode'],$sql_col,$row['aname']);
@@ -196,9 +196,9 @@ switch ($_GET["pname"]) {
                                                 }
 
                                             break;
-                                            
+
                                         }
-                                    ?> 
+                                    ?>
                                     </tbody>
                                 </table>
                                 </div>
@@ -207,7 +207,7 @@ switch ($_GET["pname"]) {
                     <div  class="col s3 ScrollStyle">
                         <div id="dashlogs" class="card white darken-1">
                             <?php
-                                $result = $conn->query("SELECT * FROM logs ORDER BY id DESC LIMIT 0,10");                           
+                                $result = $conn->query("SELECT * FROM logs ORDER BY id DESC LIMIT 0,10");
                                 if ($result->rowCount() > 0) {
                                     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                         echo "<div id='showhistory' data-sname=".$row['sname']." data-pcode=".$row['pcode']."  style='cursor: pointer;' class='card-content'>";
@@ -216,12 +216,12 @@ switch ($_GET["pname"]) {
                                         echo "</div>";
                                     }
                                 }
-                            ?>                                                  
+                            ?>
                         </div>
                          <input type="hidden" id="logloadmoreby" value="10">
                          <div align="center" style="padding: 20px;"><a id="dashlogsloadmore" class="waves-effect waves-light btn blue">Load more</a></div>
                     </div>
-	
+
 		<?php
 		break;
         case 'sprojects': ?>
@@ -262,10 +262,10 @@ switch ($_GET["pname"]) {
                                     </tfoot>
                                     <tbody>
                                     <?php
-                                        $result = $conn->query("SELECT * FROM projects WHERE NOT mtr = 1 OR NOT sb = 1 OR NOT bg = 1 OR NOT anim = 1 OR NOT sound = 1 OR NOT info = 1 ORDER BY orderby ASC ");    
+                                        $result = $conn->query("SELECT * FROM projects WHERE NOT mtr = 1 OR NOT sb = 1 OR NOT bg = 1 OR NOT anim = 1 OR NOT sound = 1 OR NOT info = 1 ORDER BY orderby ASC ");
                                         if(isset($_GET['odby'])){
                                             $result = $conn->query("SELECT * FROM projects ORDER BY {$_GET['odby']} DESC");
-                                        }                                                               
+                                        }
                                         if ($result->rowCount() > 0) {
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                                             echo "<tr>";
@@ -337,7 +337,7 @@ switch ($_GET["pname"]) {
                                                 printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="1"><a class="waves-effect waves-light btn green">Done</a></td>', $row['pcode'],$sql_col);
                                             }
                                             echo "</tr>";
-                                            
+
                                         }
                                     }
                                     ?>

@@ -325,7 +325,7 @@ if(!isset($_SESSION['login'])) {
                                     if ($result->rowCount() > 0) {
                                         $x = 0;
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                            printf(' <li><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],$_SESSION['user_data']['ugroup'], $row['pname']);
+                                            printf(' <li class="menu-comp"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],$_SESSION['user_data']['ugroup'], $row['pname']);
                                             $x += 1;
                                         }
                                     }
@@ -335,10 +335,10 @@ if(!isset($_SESSION['login'])) {
                                     if ($result->rowCount() > 0) {
                                       $x = 0;
                                       while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                          printf(' <li><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],'2', $row['pname']);
+                                          printf(' <li class="menu-rig-mode"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],'2', $row['pname']);
                                           $x += 1;
                                       }
-                                  }                                
+                                  }
                               }
 
 
