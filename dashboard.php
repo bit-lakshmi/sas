@@ -32,7 +32,15 @@ if(!isset($_SESSION['login'])) {
         <script type="text/javascript">
             var projectData = {};
         </script>
-
+        <style type="text/css">
+        <?php
+        if ($_SESSION['user_data']['ugroup'] == 1){
+          echo '.sascomp{display: block !important;}';
+        }elseif ($_SESSION['user_data']['ugroup'] == 2) {
+          echo '.sasmtr{display: block !important;}';
+        }
+         ?>
+         </style>
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -104,6 +112,9 @@ if(!isset($_SESSION['login'])) {
                         </section>
                         <div class="header-title col s2">
                             <span class="chapter-title"><?php echo constant('SITE_NAME') ?></span>
+                        </div>
+                        <div class="left col s6">
+                          <a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Projects" id="pageload" data-page="sprojects" href="javascript: void(0)"><i class="material-icons">assessment</i></a>
                         </div>
                         <!--div class="left col s6">
                         <?php
@@ -325,7 +336,7 @@ if(!isset($_SESSION['login'])) {
                                     if ($result->rowCount() > 0) {
                                         $x = 0;
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                            printf(' <li class="menu-comp"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],$_SESSION['user_data']['ugroup'], $row['pname']);
+                                            printf(' <li class="sasmenu sascomp"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],$_SESSION['user_data']['ugroup'], $row['pname']);
                                             $x += 1;
                                         }
                                     }
@@ -335,7 +346,7 @@ if(!isset($_SESSION['login'])) {
                                     if ($result->rowCount() > 0) {
                                       $x = 0;
                                       while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                          printf(' <li class="menu-rig-mode"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],'2', $row['pname']);
+                                          printf(' <li class="sasmenu sasmtr"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],'2', $row['pname']);
                                           $x += 1;
                                       }
                                   }
@@ -347,8 +358,10 @@ if(!isset($_SESSION['login'])) {
                             </ul>
                         </div>
                     </li>
-                    <?php if ($_SESSION['user_data']['access'] == 0 || $_SESSION['user_data']['ugroup'] == 2) {
-                       echo '<li class="no-padding"><a class="waves-effect waves-grey" id="pageload" data-page="sprojects" href="javascript: void(0)"><i class="material-icons">assessment</i>Projects Status</a></li>';
+                    <?php
+
+                    if ($_SESSION['user_data']['access'] == 0) {
+                       echo '<li class="no-padding"><a class="waves-effect waves-grey" id="showalltask" href="javascript: void(0)"><i class="material-icons">list</i>Show All</a></li>';
                     }
 
 

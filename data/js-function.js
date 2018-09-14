@@ -17,7 +17,9 @@ var sttable = '';
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
 
                     location.reload();
@@ -29,6 +31,10 @@ var sttable = '';
         });
 
     });
+
+      $('#showalltask').click(function(e) {
+            $('.sasmtr').toggle();
+      });
 
     $('#btn_add_mrig').click(function(e) {
         $.ajax({
@@ -42,7 +48,9 @@ var sttable = '';
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
 
                      new PNotify({
@@ -75,7 +83,9 @@ var sttable = '';
             Cookies.set('cpage', 'rig');
         }
 
-        console.log(url);
+        if (Cookies.get('dev') == 1) {
+          console.log(url);
+        }
         $.get(url, function(data){
             $("#page").html(data);
         })
@@ -198,7 +208,9 @@ $j(document).ready(function() {
         host = "192.168.23.160-192.168.23.159";
         var url = "/cgi/snotify.py?host=" + host + "&data=" + data;
         $.get(url, function(data){
+          if (Cookies.get('dev') == 1) {
             console.log(data);
+          }
         })
      }
 
@@ -210,13 +222,16 @@ $j(document).ready(function() {
 
 
     $j.getJSON('http://sas.com:8082/api/jobs?States=2', function(jd) {
-    $("#ded_suspe").html(jd.length);
+        if (Cookies.get('dev') == 1) {
+            console.info(JSON.parse(jd));
+        }
+        $("#ded_suspe").html(jd.length);
     });
     $j.getJSON('http://sas.com:8082/api/jobs?States=1', function(jd) {
-            $("#ded_acti").html(jd.length);
+        $("#ded_acti").html(jd.length);
     });
     $j.getJSON('http://sas.com:8082/api/jobs?States=4', function(jd) {
-            $("#ded_error").html(jd.length);
+        $("#ded_error").html(jd.length);
     });
 
 
@@ -244,7 +259,9 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
 
                      new PNotify({
@@ -333,10 +350,10 @@ $j(document).ready(function() {
         //$j('#textmodel').modal('open');
      })
 
-     $j(document).on('mouseenter', '.current-task', function() {
+     /*$j(document).on('mouseenter', '.current-task', function() {
         var psname = $(this).data(psname);
         projectData.sname = psname.psname;
-      })
+      })*/
 
 
 
@@ -385,7 +402,9 @@ $j(document).ready(function() {
 
     $j(document).on('click', '#scan-new-shots', function() {
         var url = "cgi/checknewshots.py?pcode=" + Cookies.get('cpcode') + "&host=" + Cookies.get('host');
-        console.log(url);
+        if (Cookies.get('dev') == 1) {
+          console.log(url);
+        }
         $("#new-shots-output").html('<div class="progress"><div class="indeterminate"></div></div>');
         $.get(url, function(data){
             $("#new-shots-output").html(data);
@@ -406,7 +425,9 @@ $j(document).ready(function() {
         $('#task_modal').modal().modal('close');
         var url = "cgi/syncfolder-handel.py?host=" + $(this).data("host") + "&pdiskn=" + $(this).data("pdiskn");
         $.get(url, function(data){
+          if (Cookies.get('dev') == 1) {
             console.log(data);
+          }
         })
 
      })
@@ -423,7 +444,9 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
                     $('#task_modal').modal().modal('close');
                     var url = "cgi/storyfolder.py?pno=" + $("#story_no").val() + "&pname=" + $("#story_name").val() + "&ptype=" + $("#story_type").val();
@@ -453,7 +476,9 @@ $j(document).ready(function() {
         $('#task_modal').modal().modal('close');
         var url = "cgi/folder-handel.py?host=" + $(this).data("host") + "&pdiskn=" + $(this).data("pdiskn") + "&psname=" + $(this).data("psname");
         $.get(url, function(data){
+          if (Cookies.get('dev') == 1) {
             console.log(data);
+          }
         })
 
      })
@@ -469,7 +494,9 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
                     updateui();
                 }
@@ -511,8 +538,11 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
-                console.log(data);
-                if (data === '1') {
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
+                data = JSON.parse(data);
+                if (data.status === 1) {
                     $('#task_modal').modal().modal('close');
                     new PNotify({
                         title: 'Success!',
@@ -543,7 +573,9 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
                     $('#task_modal').modal().modal('close');
                     new PNotify({
@@ -575,7 +607,9 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
-                console.log(data);
+                if (Cookies.get('dev') == 1) {
+                  console.log(data);
+                }
                 if (data === '1') {
                     $('#task_modal').modal().modal('close');
                     new PNotify({
@@ -616,13 +650,14 @@ $j(document).ready(function() {
         },
         success: function(data)
         {
-
-            if (data === '1') {
+            if (Cookies.get('dev') == 1) {
+              console.log(data);
+            }
+            data = JSON.parse(data);
+            if (data.status === 1) {
                 updateui();
-
             }
             else {
-                console.log(data);
                 new PNotify({
                         title: 'Errror !',
                         text: 'System error occurred!! please try again after sometime',
@@ -645,12 +680,15 @@ $j(document).ready(function() {
             },
             success: function(data)
             {
+
                 if (data === '1') {
                     updateui();
 
                 }
                 else {
-                    console.log(data);
+                    if (Cookies.get('dev') == 1) {
+                      console.log(data);
+                    }
                     new PNotify({
                             title: 'Errror !',
                             text: 'System error occurred!! please try again after sometime',

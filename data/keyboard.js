@@ -9,7 +9,7 @@ $(document).bind('keydown', 'f1', function assets() {
 	$('#add_task').modal().modal('open');
 });
 
-
+/*
 $(document).bind('keydown', 'space', function assets() {
 	console.log(projectData);
   $.ajax({
@@ -28,3 +28,4 @@ $(document).bind('keydown', 'space', function assets() {
       }
   });
 });
+*/

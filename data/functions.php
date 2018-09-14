@@ -4,14 +4,6 @@ if(!isset($_GET["fname"])) {
 	echo "Error Code: 403";
 	exit;
 }
-function add_log($ltext, $conn, $pcode, $pname){
-		$uid = $_SESSION['user_data']['uname'];
-		$new_time = date("Y-m-d H:i:s", strtotime('+3 hours +29 minutes -23 seconds'));
-		$result = $conn->query("INSERT INTO logs (uid, ltext, pcode, sname, ldatetime) VALUES ('{$uid}', '{$ltext}', '{$pcode}', '{$pname}', '{$new_time}')");
-
-		
-}
-
 function update_client($conn){
 	$uid = $_SESSION['user_data']['id'];
 	$result = $conn->query("UPDATE sessions SET isupdate = '1' WHERE NOT uid = '{$uid}'");
@@ -54,7 +46,7 @@ switch ($_GET["fname"]) {
 		session_unset();
 		session_destroy();
 		setcookie("autologin", "", 0,'/');
-		unset($_COOKIE['autologin']); 
+		unset($_COOKIE['autologin']);
 		header('Location: ../dashboard');
 		break;
 
@@ -109,7 +101,7 @@ switch ($_GET["fname"]) {
 	break;
 
 
-	case 'taskedit': 
+	case 'taskedit':
 					$sname = $_POST['sname'];
 					$pcode = $_POST['pcode'];
 					$sgroup = $_SESSION['user_data']['ugroup'];
@@ -128,11 +120,11 @@ switch ($_GET["fname"]) {
 	                        	<div class="col s12">
 	                        		<div class="card">
 	                        			<div class="card-content">
-	                        				Shot No. <?php echo $_POST['sname'] ?> | <?php echo $pcode ?>	
+	                        				Shot No. <?php echo $_POST['sname'] ?> | <?php echo $pcode ?>
 	                        			</div>
-	                        			
+
 	                        		</div>
-	                        		
+
 	                        	</div>
 	                            <div class="col s12">
 	                                <ul class="tabs tab-demo z-depth-1" style="width: 100%;">
@@ -161,21 +153,21 @@ switch ($_GET["fname"]) {
 					                                    	<label>Assigned to</label>
 					                                        <select class="browser-default" id="task_auser" >
 					                                            <option  value="">Choose your option</option>
-					                                            <?php                                            
+					                                            <?php
 					                                            foreach ($U_DATA as $key => $u_value) {
 					                                            	if ($u_value['ugroup'] == $sgroup) {
-					                                            	
-					                                            		if($post_data[0]['auser'] == $u_value['id']){	                                         
+
+					                                            		if($post_data[0]['auser'] == $u_value['id']){
 					                                            			printf("<option value='%s' selected='selected'>%s</option>", $u_value['id'], $u_value['dname']);
 					                                            		} else {
 					                                            			printf("<option value='%s'>%s</option>", $u_value['id'], $u_value['dname']);
 					                                            		}
 					                                            	}
-					                                                    
-					                                            }  
+
+					                                            }
 
 					                                            ?>
-					                                        </select>                                       
+					                                        </select>
 					                                    </div>
 					                                    <div class="col s6">
 					                                    	<label>Status</label>
@@ -189,10 +181,10 @@ switch ($_GET["fname"]) {
 						                                        		} else {
 						                                        			printf("<option value='%s'>%s</option>", $key, $s_value[0]);
 						                                        		}
-					                                            }  
+					                                            }
 
 					                                            ?>
-					                                        </select>	                                        
+					                                        </select>
 				                                    </div>
 					                               </div>
 					                        </div>
@@ -221,10 +213,10 @@ switch ($_GET["fname"]) {
 				                                        		} else {
 				                                        			printf("<option value='%s'>%s</option>", $u_value['id'], $u_value['dname']);
 				                                        		}
-				                                        }  
+				                                        }
 
 				                                        ?>
-				                                    </select>                                       
+				                                    </select>
 					                            </div>
 				                                <div class="col s6">
 				                                	<label>Status</label>
@@ -237,10 +229,10 @@ switch ($_GET["fname"]) {
 				                                        		} else {
 				                                        			printf("<option value='%s'>%s</option>", $key, $s_value[0]);
 				                                        		}
-				                                        }  
+				                                        }
 
 				                                        ?>
-				                                    </select>                                       
+				                                    </select>
 					                            </div>
 				                           </div>
 					                    </div>
@@ -268,7 +260,7 @@ switch ($_GET["fname"]) {
 			            <a id="task_btn_update" class="waves-effect waves-light btn green m-b-xs" style="float: right;">Update</a>
 			            <a id="task_btn_log" data-pcode="<?php echo $pcode ?>" data-sname="<?php echo $_POST['sname'] ?>" class="waves-effect waves-light btn blue m-b-xs">History</a>
                     </form>
-                    
+
 		<?php
 		break;
 		case 'taskupdate':
@@ -287,19 +279,19 @@ switch ($_GET["fname"]) {
 						 $log_text .= $c_value['dname'];
 					}
 				}
-				add_log($log_text, $conn, $_POST['pcode'],$_POST['sname']);
+				$res = add_log($log_text, $conn, $_POST['pcode'],$_POST['sname']);
 				update_client($conn);
-				echo "1";
+				echo json_encode(array('log' => $res, "status" => 1 ));
 			}
 		break;
 
-		case 'updatebshot': 
+		case 'updatebshot':
 			$pcode = $_POST['pcode'];
 			$bshots = 0;
 	        $result = $conn->query("SELECT bshots FROM projects WHERE pcode='{$pcode}'");
 	            while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 	                $bshots = intval($row['bshots']);
-	             
+
 	        }
 
 		?>
@@ -319,8 +311,8 @@ switch ($_GET["fname"]) {
 	                        </div>
 	                    </div>
                 </div>
-			
-			
+
+
 
 			<?php
 			break;
@@ -340,13 +332,13 @@ switch ($_GET["fname"]) {
 			$result = $conn->query("SELECT * FROM sessions WHERE uid ='{$uid}'");
 			$isclientupdate = false;
 			if ($result->rowCount() > 0) {
-				while($row = $result->fetch(PDO::FETCH_ASSOC)) {				
+				while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 					if (isdev()) {
-						echo "<pre>";
+						echo "isupdate : <pre>";
 						print_r($row);
-					}					
+					}
 			        if($row['isupdate'] == '1'){
-			        	$isclientupdate = true;			        	
+			        	$isclientupdate = true;
 			        }
 			    }
 			}
@@ -364,18 +356,28 @@ switch ($_GET["fname"]) {
 
 		case 'proupdate':
 			$sql = "";
+			$log_text = "";
+			$sname = "";
 			switch ($_POST['ugroup']) {
 				case '1':
 					$sql = sprintf("UPDATE projects SET %s = '%s' WHERE pcode = '%s'", $_POST['colname'], $_POST['colvalue'], $_POST['pcode']);
+					$log_text .= "{$_POST['colname']} : " . $_POST['colvalue'] . "\npCode : ". $_POST['pcode'];
+					$sname = $_POST['colname'];
 					break;
 				case '2':
 					$sql = sprintf("UPDATE mrig SET %s = '%s' WHERE pcode = '%s' AND aname = '%s'", $_POST['colname'], $_POST['colvalue'], $_POST['pcode'], $_POST['aname']);
+					$log_text .= "{$_POST['colname']} : " . $_POST['colvalue'] . "\npCode : ". $_POST['pcode']. "\naName : ". $_POST['aname'];
+					$sname = $_POST['aname'];
 					break;
 			}
 			$result = $conn->query($sql);
 			if($result){
+				if (isdev()) {
+					$res = add_log($log_text, $conn, $_POST['pcode'],$sname);
+				}
 				update_client($conn);
-				echo "1";
+				echo json_encode(array('log' => $res, "status" => 1 ));
+
 			}
 		break;
 
@@ -432,7 +434,7 @@ switch ($_GET["fname"]) {
                 </div>
 	             <a id="story_add" class="waves-effect waves-light btn green m-b-xs">Add Story</a>
                 </form>
-		
+
 		<?php
 		break;
 
@@ -454,7 +456,7 @@ switch ($_GET["fname"]) {
 			$sname = $_GET['sname'];
 			$pcode = $_GET['pcode'];
 			$result = $conn->query("SELECT uid, ltext, ldatetime FROM logs WHERE pcode ='{$pcode}' AND sname = '{$sname}'");
-			echo '<div class="card white darken-1">';                           
+			echo '<div class="card white darken-1">';
             if ($result->rowCount() > 0) {
                 while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                     echo "<div class='card card-content'>";
@@ -468,7 +470,7 @@ switch ($_GET["fname"]) {
 
 		case 'dashlogsloadmore':
 			$no = $_GET['from'];
-			$result = $conn->query("SELECT uid, ltext, ldatetime FROM logs ORDER BY id DESC LIMIT $no,10");                           
+			$result = $conn->query("SELECT uid, ltext, ldatetime FROM logs ORDER BY id DESC LIMIT $no,10");
             if ($result->rowCount() > 0) {
                 while($row = $result->fetch(PDO::FETCH_ASSOC)) {
                     echo "<div class='card-content'>";

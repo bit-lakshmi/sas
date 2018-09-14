@@ -157,10 +157,16 @@ switch ($_GET["pname"]) {
                                             break;
 
                                             case '2':
-                                                $result = $conn->query("SELECT *  FROM `mrig` WHERE mode = '2' OR texturing = '2' OR rig = '2'");
+																								if (isdev()) {
+																									$result = $conn->query("SELECT *  FROM `mrig` WHERE mode = '2' OR texturing = '2' OR rig = '2'");
+																								}else {
+																									$result = $conn->query("SELECT *  FROM `mrig` WHERE mode = '2' OR texturing = '2' OR rig = '2'");
+																								}
+
                                                 if ($result->rowCount() > 0) {
                                                     while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                                        printf('<tr class="current-task" data-psname="%s" >', $row['sname']);
+																												//print_r($row);
+                                                        printf('<tr class="current-task" data-psname="%s" >', $row['aname']);
                                                         echo "<td>{$row['pcode']}</td>";
                                                         printf("<td id='fpath' data-host='%s' data-pdiskn='%s' data-psname='%s' style='cursor: pointer;'>%s</td>", $_SESSION['user_data']['host'],getprojectdata('fpath', $row['pcode']),$row['aname'], $row['aname']);
 

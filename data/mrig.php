@@ -50,27 +50,30 @@ switch ($_GET["fname"]) {
 	                                </div>
 	                                <div class="row">
 	                                    <div class="col s6">
-	                                    	<a id="mrig_update" class="waves-effect waves-light btn green m-b-xs">Update</a>                                        
+	                                    	<a id="mrig_update" class="waves-effect waves-light btn green m-b-xs">Update</a>
                                     	</div>
                                     	<div class="col s6">
-	                                    	<a id="btn_delete" data-pcode="<?php echo $post_data[0]['pcode'] ?>" data-tabel="mrig" data-id="<?php echo $post_data[0]['id'] ?>" class="waves-effect waves-light btn red m-b-xs">Delete</a>                                        
+	                                    	<a id="btn_delete" data-pcode="<?php echo $post_data[0]['pcode'] ?>" data-tabel="mrig" data-id="<?php echo $post_data[0]['id'] ?>" class="waves-effect waves-light btn red m-b-xs">Delete</a>
                                     	</div>
 	                               </div>
 	                        </div>
 	                    </div>
                 </div>
 	             <input id="mrig_uid" type="hidden" name="id" value="<?php echo $post_data[0]['id'] ?>">
-	             <input id="mrig_pcode" type="hidden" name="pcode" value="<?php echo $post_data[0]['pcode'] ?>">             
+	             <input id="mrig_pcode" type="hidden" name="pcode" value="<?php echo $post_data[0]['pcode'] ?>">
                 </form>
-		
+
 		<?php
-		
+
 		break;
 
 		case 'mrigupdate':
 			$result = $conn->query("UPDATE mrig SET aname = '{$_POST['sname']}', aoid = '{$_POST['soid']}' WHERE id = '{$_POST['id']}'");
 			if($result){
-				//add_log($log_text, $conn, $_POST['pcode'],$_POST['sname']);
+				if (isdev()) {
+					$log_text .= "\naName : " . $_POST['sname'] . "\naOid : ". $_POST['soid'];
+					add_log($log_text, $conn, $_POST['pcode'],$_POST['sname']);
+				}
 				update_client($conn);
 				echo "1";
 			}
@@ -79,12 +82,16 @@ switch ($_GET["fname"]) {
 		case 'mrigupdateinfo':
 			$result = $conn->query("UPDATE mrig SET info = '{$_POST['info']}' WHERE id = '{$_POST['id']}'");
 			if($result){
+				if (isdev()) {
+					$log_text .= "\naInfo : " . $_POST['info'] . "\nId : ". $_POST['id'];
+					add_log($log_text, $conn, $_POST['pcode'],$_POST['sname']);
+				}
 				//add_log($log_text, $conn, $_POST['pcode'],$_POST['sname']);
 				update_client($conn);
 				echo "1";
 			}
 		break;
-	
+
 }
 
 ?>

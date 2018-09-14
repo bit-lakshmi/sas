@@ -27,3 +27,22 @@
 td, th {
     padding: 2px 2px !important;
 }
+
+.sasmenu{
+	display: none;
+}
+
+.dataTables_filter{
+    float: right;
+    position: absolute;
+    right: 30%;
+    margin-top: -3.5%;
+}
+
+#taskstable thead tr {
+	display: none;
+}
+
+.dataTables_scrollHeadInner table, .dataTables_scrollFootInner table {
+	margin: -10px 0px;
+}
