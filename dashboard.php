@@ -29,6 +29,7 @@ if(!isset($_SESSION['login'])) {
         <link href="assets/css/custom.css" rel="stylesheet" type="text/css"/>
         <link href="assets/css/pnotify.custom.min.css" rel="stylesheet" type="text/css"/>
         <link href="assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" type="text/css"/>
+
         <script type="text/javascript">
             var projectData = {};
         </script>
@@ -41,14 +42,6 @@ if(!isset($_SESSION['login'])) {
         }
          ?>
          </style>
-
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="http://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="http://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
     </head>
     <body id="body" style="background-image: url(/assets/images/limgs/<?php echo(rand(1,8)); ?>.jpg);background-position: center center;background-repeat: no-repeat;background-size: cover;background-color: #fff;">
         <?php
@@ -605,11 +598,6 @@ if(!isset($_SESSION['login'])) {
             </div>
         </div>
 
-
-
-
-
-
         <!-- Javascripts -->
         <script src="assets/plugins/jquery/jquery-2.2.0.min.js"></script>
         <script src="assets/plugins/jquery/jquery-3.2.1.min.js"></script>
@@ -625,6 +613,7 @@ if(!isset($_SESSION['login'])) {
         <script src="assets/plugins/jquery-blockui/jquery.blockui.js"></script>
         <script src="assets/js/alpha.js"></script>
         <script src="assets/js/Cookies.js"></script>
+        <script src="assets/js/toast.js"></script>
         <script src="assets/js/jquery.hotkeys.js"></script>
         <script src="assets/js/pnotify.custom.min.js"></script>
         <script type="text/javascript" src="data/js-function.js"></script>

@@ -8,9 +8,10 @@
 	<script src="assets/plugins/dxhtmlgantt/codebase/dhtmlxgantt-pro.js" type="text/javascript" charset="utf-8"></script>
 	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_marker.js?v=5.2.0"></script>
 	<link rel="stylesheet" href="assets/plugins/dxhtmlgantt/codebase/skins/dhtmlxgantt_material.css?v=5.2.0" type="text/css" media="screen" title="no title" charset="utf-8">
-	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_tooltip.js"></script>  
+	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_tooltip.js"></script>
 	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_undo.js?v=5.2.0"></script>
 	<script src="assets/plugins/dxhtmlgantt/codebase/ext/dhtmlxgantt_keyboard_navigation.js?v=5.2.0"></script>
+
 	<style>
 			html, body {
 		padding: 0px;
@@ -72,6 +73,7 @@
 			}
 
 	</style>
+
 </head>
 <body>
 <input type="button" value="collapse all" onclick="gantt.collapseAll()"/>
@@ -221,7 +223,7 @@
 			gantt.config.highlight_critical_path = true;
 		gantt.render();
 	}
-	
+
 	gantt.config.columns = [
 		{name: "owner", width: 80, align: "center", template: function (item) {
 				return byId(gantt.serverList('staff'), item.owner_id)}},
@@ -248,17 +250,17 @@
 	gantt.config.order_branch = true;
 	gantt.config.order_branch_free = true;
 
-	gantt.config.sort = true; 
+	gantt.config.sort = true;
 
 	gantt.config.auto_types = true;
 	gantt.config.drag_project = true;
 
 
-	
+
 	//gantt.config.static_background = true;
 
 	gantt.config.scale_height = 20*3;
-	
+
 	var weekScaleTemplate = function(date){
 		var dateToStr = gantt.date.date_to_str("%d %M");
 		var weekNum = gantt.date.date_to_str("(week %W)");
@@ -285,7 +287,7 @@
 	};
 
 	gantt.templates.task_cell_class = function(item,date){
-	    if(date.getDay()==0){ 
+	    if(date.getDay()==0){
 	        return "weekend" ;
 	    }
 	};
@@ -328,7 +330,7 @@
 
 	gantt.load('data/gannt-data.php');
 
-	var dp = new gantt.dataProcessor('data/gannt-data.php'); 
+	var dp = new gantt.dataProcessor('data/gannt-data.php');
 	dp.init(gantt);
 	//gantt.parse(tasks);
 

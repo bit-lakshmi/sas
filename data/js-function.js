@@ -5,8 +5,6 @@ var sttable = '';
  $(document).ready(function() {
     var hi = ($(window).height() - 200) + "px";
     $('.ScrollStyle').css('max-height',hi);
-
-
     $('#login').click(function(e) {
         $.ajax({
             type: "POST",
@@ -33,7 +31,7 @@ var sttable = '';
     });
 
       $('#showalltask').click(function(e) {
-            $('.sasmtr').toggle();
+            $('.sasmtr').toggle("fast");
       });
 
     $('#btn_add_mrig').click(function(e) {
@@ -53,11 +51,12 @@ var sttable = '';
                 }
                 if (data === '1') {
 
-                     new PNotify({
+                     /*new PNotify({
                         title: 'Success!',
                         text: 'Task added successfully.',
                         type: 'success'
-                    });
+                    });*/
+                    showError('Task added successfully.','success', true);
                 }
                 else {
                     swal("Error !", "System error occurred!! please try again after sometime", "error");
@@ -150,8 +149,6 @@ $j(document).ready(function() {
                 }
             });
             $('.dataTables_length select').addClass('browser-default');
-
-
         }, 500);
      }
      $(document).ready(function(){
@@ -264,11 +261,12 @@ $j(document).ready(function() {
                 }
                 if (data === '1') {
 
-                     new PNotify({
+                     /*new PNotify({
                         title: 'Success!',
                         text: 'Task added successfully.',
                         type: 'success'
-                    });
+                    });*/
+                    showError('Task added successfully.','success', true);
                     updateui();
                 }
                 else {
@@ -401,7 +399,7 @@ $j(document).ready(function() {
 
 
     $j(document).on('click', '#scan-new-shots', function() {
-        var url = "cgi/checknewshots.py?pcode=" + Cookies.get('cpcode') + "&host=" + Cookies.get('host');
+        var url = "cgi/checknewshots-beta.py?pcode=" + Cookies.get('cpcode') + "&host=" + Cookies.get('host');
         if (Cookies.get('dev') == 1) {
           console.log(url);
         }
@@ -451,11 +449,12 @@ $j(document).ready(function() {
                     $('#task_modal').modal().modal('close');
                     var url = "cgi/storyfolder.py?pno=" + $("#story_no").val() + "&pname=" + $("#story_name").val() + "&ptype=" + $("#story_type").val();
                     $.get(url, function(data){
-                        new PNotify({
+                        /*(new PNotify({
                             title: 'Success!',
                             text: 'Story Add successfully.',
                             type: 'success'
-                        });
+                        });*/
+                        showError('Story Add successfully.','success', true);
                         updateui();
                     });
 
@@ -544,11 +543,12 @@ $j(document).ready(function() {
                 data = JSON.parse(data);
                 if (data.status === 1) {
                     $('#task_modal').modal().modal('close');
-                    new PNotify({
+                    /*new PNotify({
                         title: 'Success!',
                         text: 'Task updated successfully.',
                         type: 'success'
-                    });
+                    });*/
+                    showError('Task updated successfully.','success', true);
                     //swal("Good job!", "Task updated successfully", "success");
                     var data = "Shot no. " + $("#task_sname").val() + " update successfully. \n Story code : " + $("#task_pcode").val();
                     send_dnotify(data);
@@ -578,11 +578,12 @@ $j(document).ready(function() {
                 }
                 if (data === '1') {
                     $('#task_modal').modal().modal('close');
-                    new PNotify({
+                    /*new PNotify({
                         title: 'Success!',
                         text: 'Ch/Assest updated successfully.',
                         type: 'success'
-                    });
+                    });*/
+                    showError('Ch/Assest updated successfully.','success', true);
                     //swal("Good job!", "Task updated successfully", "success");
                     var data = "Shot no. " + $("#task_sname").val() + " update successfully. \n Story code : " + $("#task_pcode").val();
                     //send_dnotify(data);

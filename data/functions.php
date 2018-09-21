@@ -358,19 +358,21 @@ switch ($_GET["fname"]) {
 			$sql = "";
 			$log_text = "";
 			$sname = "";
+			$result = "";
 			switch ($_POST['ugroup']) {
 				case '1':
 					$sql = sprintf("UPDATE projects SET %s = '%s' WHERE pcode = '%s'", $_POST['colname'], $_POST['colvalue'], $_POST['pcode']);
 					$log_text .= "{$_POST['colname']} : " . $_POST['colvalue'] . "\npCode : ". $_POST['pcode'];
 					$sname = $_POST['colname'];
+					$result = $conn->query($sql);
 					break;
 				case '2':
 					$sql = sprintf("UPDATE mrig SET %s = '%s' WHERE pcode = '%s' AND aname = '%s'", $_POST['colname'], $_POST['colvalue'], $_POST['pcode'], $_POST['aname']);
 					$log_text .= "{$_POST['colname']} : " . $_POST['colvalue'] . "\npCode : ". $_POST['pcode']. "\naName : ". $_POST['aname'];
 					$sname = $_POST['aname'];
+					$result = $conn->query($sql);
 					break;
 			}
-			$result = $conn->query($sql);
 			if($result){
 				if (isdev()) {
 					$res = add_log($log_text, $conn, $_POST['pcode'],$sname);

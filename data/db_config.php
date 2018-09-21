@@ -117,9 +117,11 @@ function getprojectdata($type, $pcode){
 }
 
 function add_log($ltext, $conn, $pcode, $pname){
-		$uid = $_SESSION['user_data']['uname'];
-		$new_time = date("Y-m-d H:i:s", strtotime('+3 hours +29 minutes -23 seconds'));
-		$result = $conn->query("INSERT INTO logs (uid, ltext, pcode, sname, ldatetime) VALUES ('{$uid}', '{$ltext}', '{$pcode}', '{$pname}', '{$new_time}')");
+    if (!isdev()) {
+  		$uid = $_SESSION['user_data']['uname'];
+  		$new_time = date("Y-m-d H:i:s", strtotime('+3 hours +29 minutes -23 seconds'));
+  		$result = $conn->query("INSERT INTO logs (uid, ltext, pcode, sname, ldatetime) VALUES ('{$uid}', '{$ltext}', '{$pcode}', '{$pname}', '{$new_time}')");
+    }
     if (isdev()) {
       return "<script>console.log( 'Add Log: " . $ltext . "\n" .$pcode. "\n" .$pname. "' );</script>";
     }
