@@ -8,7 +8,8 @@ form = cgi.FieldStorage()
 host = form.getvalue("host")
 pdisk =  form.getvalue("pdiskn")
 psname =  form.getvalue("psname")
-port = 5555 
+ftype =  form.getvalue("t")
+port = 5555
 
 cnx = mysql.connector.connect(host='192.168.23.92', port=3306, database='sas', user='admin', password='2648')
 cursor = cnx.cursor()
@@ -20,9 +21,10 @@ for pdata in cursor:
     SFOLDER = pdata
 
 MPATH = "X:\Punchtantra stories\Stories"
-
+MPATH_NAME = "Punchtantra stories\Stories"
 if SFOLDER[0] == 1:
-	MPATH = "X:\Occasional Films"
+    MPATH = "X:\Occasional Films"
+    MPATH_NAME = "Occasional Films"
 
 
 
@@ -32,6 +34,9 @@ SEL_STORY = pdisk
 
 CS_PATH = os.path.normpath(MPATH + "/" + SEL_STORY)
 COMP_PATH = os.path.normpath(CS_PATH + "/09 Comp")
+SCENE_PATH = os.path.normpath(CS_PATH + "/07 Lighting")
+FINAL_PATH = os.path.normpath(CS_PATH + "/10 Final")
+BG_PATH = os.path.normpath(CS_PATH + "/01 Story Board")
 
 
 SHOT_NO = psname
@@ -46,6 +51,20 @@ SH_NAME = os.path.normpath('Shot_' + str(SHOT_NO))
 
 
 CSH_PATH = os.path.normpath(COMP_PATH + "/"+ SH_NAME)
+if ftype == 'sf':
+    CSH_PATH = os.path.normpath(SCENE_PATH + "/"+ SH_NAME)
+
+
+if ftype == 'ff':
+    CSH_PATH = os.path.normpath(FINAL_PATH + "/"+ SH_NAME)
+
+
+if ftype == 'bf':
+    CSH_PATH = os.path.normpath(BG_PATH)
+
+
+if ftype == 'syf':
+    CSH_PATH = os.path.normpath("X:/Library/Sync/" + MPATH_NAME + "/" + SEL_STORY + "/06 Animation")
 #if not os.path.isdir(CSH_PATH):
 #	CSH_PATH = os.path.normpath("X:/Library/Sync/Punchtantra stories/Stories/"+ SEL_STORY + "/06 Animation")
 
@@ -63,7 +82,7 @@ if SUB_SHOT == "":
 		print e
 else:
 	CSH_PATH = os.path.normpath(CSH_PATH + "/" + SUB_SHOT)
-	
+
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect((host, port))
@@ -75,7 +94,3 @@ else:
 	except Exception as e:
 		print e
 pass
-
-
-
-

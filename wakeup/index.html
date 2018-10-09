@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+ <html>
+   <head>
+     <title>Wakeup</title>
+     <!--Import Google Icon Font-->
+     <link href="./lib/materialdesignicons.min.css" rel="stylesheet">
+     <!--Import materialize.css-->
+     <link type="text/css" rel="stylesheet" href="./lib/materialize.min.css"  media="screen,projection"/>
+     <link rel="stylesheet" type="text/css" href="./lib/MDTimePicker/mdtimepicker.css">
+     <meta name="theme-color" content="#0288d1">
+     <meta charset="utf-8"/>
+     <!--link rel="manifest" href="manifest.json"-->
+     <!--Let browser know website is optimized for mobile-->
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+     <style>
+     .spinner-red, .spinner-red-only {
+        border-color: #ffffff !important;
+      }
+     #loader{
+       display: none;
+       position: absolute;
+       right: 10%;
+       z-index: 999;
+       top: 0%
+     }
+     span.badge {
+          color: #ffffff !important;
+          border-radius: 10px !important;
+     }
+     </style>
+     <script type="text/javascript">
+     if ('serviceWorker' in navigator) {
+       window.addEventListener('load', function () {
+           navigator.serviceWorker.register('/sw.js').then(function (registration) {
+               console.log('Service worker successfully registered on scope', registration.scope);
+           }).catch(function (error) {
+               console.log('Service worker failed to register');
+           });
+       });
+      }
+
+      var isDev = 1;
+     </script>
+   </head>
+
+   <body>
+     <nav class="light-blue darken-2">
+       <div class="nav-wrapper">
+         <a href="../wake" class="brand-logo center">Wakeup</a>
+         <a href="#" data-activates="slide-out" class="button-collapse show-on-large"><i class="mdi mdi-menu"></i></a>
+         <ul id="slide-out" class="side-nav"></ul>
+       </div>
+     </nav>
+     <div align="center" id="loader" style="padding: 10px;">
+       <div class="preloader-wrapper small active">
+        <div class="spinner-layer spinner-red-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+     </div>
+     <div id="prostart" class="progress">
+          <div class="indeterminate"></div>
+     </div>
+     <div id="page">
+
+
+     </div>
+
+     <div id="modal1" class="modal">
+      <div id="modalc" class="modal-content"></div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Update</a>
+      </div>
+    </div>
+
+     <script type="text/javascript" src="./lib/jquery-3.2.1.min.js"></script>
+     <script type="text/javascript" src="./lib/materialize.min.js"></script>
+      <script type="text/javascript" src="./lib/MDTimePicker/mdtimepicker.min.js"></script>
+     <script type="text/javascript">
+     $( document ).ready(function(){
+        var apiUrl = "http://www.solartsstudio.com/wakeup/restful";
+        if (isDev) {
+          apiUrl = "http://sas.com/wakeup/restful.php";
+        }
+        $(".button-collapse").sideNav();
+        $("#prostart").hide();
+        $("#loader").show();
+
+        function notify(msg){
+          Materialize.toast(msg, 4000)
+        }
+
+        function showLoder(isShow){
+          if (isShow) {
+              $("#loader").show();
+          }else {
+              $("#loader").hide();
+          }
+        }
+
+        function proLoder(isShow){
+          if (isShow) {
+              $("#prostart").show();
+          }else {
+              $("#prostart").hide();
+          }
+        }
+
+        function sideMenu() {
+          $.get(apiUrl+"?page=sideMenu", function(data, status){
+            $("#slide-out").html(data);
+          });
+        }
+
+        function pageLoad(spname){
+          $("#loader").show();
+          $('.button-collapse').sideNav('hide');
+          pname = apiUrl + "?page=" + spname;
+          $.get(pname, function(data, status){
+            if(data == 'logout'){
+                window.parent.location.reload();
+            }
+            try {
+              var data = JSON.parse(data);
+              if (data.error) {
+                 notify(data.text);
+              }
+            } catch (e) {
+
+            }
+            $("#page").html(data);
+            $("#loader").hide();
+          });
+        }
+
+        $(document.body).on('click', '[id=modelLoad]' ,function(e){
+            var timeType = $(this).data('action');
+            $.get(apiUrl+"?page=timeUpdate", function(data, status){
+                if (isDev) {
+                  console.log("isLogin : " + data);
+                }
+                var data = JSON.parse(data);
+                if (data.error) {
+                   notify(data.text);
+                }else {
+                    $('#modalc').html(data.text);
+                    $('#modal1').modal().modal('open');
+                    $('#timepicker').mdtimepicker({
+                                          timeFormat: 'hh:mm:ss',
+                                          format: 'h:mm tt',
+                                          theme: 'blue'
+                                      });
+                    $('#timepicker').mdtimepicker().on('timechanged', function(e){
+                      $('#modal1').modal().modal('close');
+                      if (isDev) {
+                          console.log(e.value);
+                          console.log(e.time);
+                      }
+                      $('#timepicker').val(e.time);
+                      $.ajax({
+                             type: "POST",
+                             url: apiUrl+"?api=doTimeUpdate",
+                             data:{
+                               time:e.time,
+                               type:timeType
+                             },
+                             success: function(data)
+                             {
+                                 if (isDev) {
+                                   console.log("doTimeUpdate : " + data);
+                                 }
+                                 showLoder(0);
+                                 var data = JSON.parse(data);
+                                 if (data.error) {
+                                    notify(data.text);
+                                 }else {
+                                   notify(data.text);
+                                   pageLoad('attend');
+                                 }
+
+                             }
+                      });
+
+                    });
+                }
+            });
+        });
+
+
+         $(document.body).on('click', '[id=pageload]' ,function(e){
+           e.preventDefault();
+          $("#loader").show();
+          $('.button-collapse').sideNav('hide');
+          var pname = $(this).data('page');
+          pname = apiUrl + "?page=" + pname;
+          $.get(pname, function(data, status){
+            $("#page").html(data);
+            $("#loader").hide();
+          });
+        });
+
+        //startup
+        $.get(apiUrl+"?api=islogin", function(data, status){
+            if (isDev) {
+              console.log("isLogin : " + data);
+            }
+            var data = JSON.parse(data);
+            if (data.error) {
+               notify(data.text);
+            }else {
+              if (data.status) {
+                pageLoad('home');
+                sideMenu();
+              }else {
+                pageLoad('login')
+              }
+            }
+        });
+
+
+
+
+        //doLogin
+       $(document.body).on('click', '#doLogin' ,function(e){
+            e.preventDefault();
+            showLoder(1);
+            var form = $(this);
+            var url = apiUrl + "?api=doLogin"
+            $.ajax({
+                   type: "POST",
+                   url: url,
+                   data:{
+                     uname:$("#uname").val(),
+                     pass:$("#pass").val()
+                   },
+                   success: function(data)
+                   {
+                       if (isDev) {
+                         console.log("doLogin : " + data);
+                       }
+                       showLoder(0);
+                       var data = JSON.parse(data);
+                       if (data.error) {
+                          notify(data.text);
+                       }else {
+                         pageLoad('home');
+                         sideMenu();
+                       }
+
+                   }
+                 });
+
+        });
+
+
+        //do Update password
+
+        $(document.body).on('click', '#updatepass' ,function(){
+          showLoder(1);
+          $.post(apiUrl + "?api=doUpdatePass",
+          {
+              opass: $("#opass").val(),
+              npass: $("#npass").val(),
+              rnpass: $("#rnpass").val()
+          },
+          function(data, status){
+              if (isDev) {
+                console.log("Passoword Update : " + data);
+              }
+              showLoder(0);
+              var data = JSON.parse(data);
+              //"Password changed successfully."
+              if (data.error) {
+                 notify(data.text);
+              }else {
+                  notify(data.text);
+                  pageLoad('home');
+              }
+          });
+        });
+
+
+
+
+        //pc start
+
+        $(document.body).on('click', '#pstart' ,function(){
+          showLoder(1);
+          proLoder(1);
+          console.log($(this).data("sip"));
+          var url = apiUrl + "?api=pcStart"
+          $.ajax({
+                 type: "GET",
+                 url: url,
+                 success: function(data)
+                 {
+                     if (isDev) {
+                       console.log("pcStart : " + data);
+                     }
+                     showLoder(0);
+                     var data = JSON.parse(data);
+                     if (data.error) {
+                        notify(data.text);
+                     }else {
+                        notify(data.text);
+                         var refreshId = setInterval(function() {
+                           $.get(apiUrl + "?api=isStart", function(data, status){
+                             if (isDev) {
+                               console.log("isStart : " + data);
+                             }
+                             var data = JSON.parse(data);
+                             if(data.status == 0){
+                                proLoder(0);
+                               notify("System successfully started.");
+                               navigator.vibrate([500, 300, 500]);
+                                $("#prostart").hide();
+                                clearInterval(refreshId);
+                             }
+                           });
+
+                          }, 4000);
+                     }
+
+                 }
+               });
+        });
+
+        //do Addd userData
+
+
+        $(document.body).on('click', '#savedata' ,function(){
+            showLoder(1);
+          $.post(apiUrl + "?api=addUser",
+          {
+              sip: $("#sip").val(),
+              sname: $("#sname").val(),
+              pass: $("#pass").val(),
+              uname: $("#uname").val()
+          },
+          function(data, status){
+            showLoder(0);
+            var data = JSON.parse(data);
+            if (data.error) {
+               notify(data.text);
+            }else {
+               notify(data.text);
+            }
+          });
+        });
+
+
+      //attend
+
+
+      $(document.body).on('click', '#isiam' ,function(){
+          showLoder(1);
+        $.get(apiUrl + "?api=todayim",
+            function(data){
+              showLoder(0);
+              var data = JSON.parse(data);
+              if (data.error) {
+                 notify(data.text);
+              }else {
+                notify(data.text);
+                pageLoad('attend');
+              }
+          });
+      });
+
+
+
+
+        //global
+     });
+     </script>
+
+
+   </body>
+ </html>

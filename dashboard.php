@@ -106,9 +106,10 @@ if(!isset($_SESSION['login'])) {
                         <div class="header-title col s2">
                             <span class="chapter-title"><?php echo constant('SITE_NAME') ?></span>
                         </div>
-                        <div class="left col s6">
-                          <a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Projects" id="pageload" data-page="sprojects" href="javascript: void(0)"><i class="material-icons">assessment</i></a>
-                        </div>
+                        <ul class="col s9 m3 nav-left-menu">
+                          <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Projects" id="pageload" data-page="sprojects" href="javascript: void(0)"><i class="material-icons">assessment</i></a></li>
+                          <li><a class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="SAS Project Timeline" href="http://sas.com/gantt.html" target="_blank"><i class="material-icons">view_list</i></a></li>
+                        </ul>
                         <!--div class="left col s6">
                         <?php
                         /*$last_project = $_SESSION['user_data']['last_project'];
@@ -322,7 +323,7 @@ if(!isset($_SESSION['login'])) {
                     <li class="no-padding">
                         <a class="collapsible-header waves-effect waves-grey"><i class="material-icons">apps</i>Tasks<i class="nav-drop-icon material-icons">keyboard_arrow_right</i></a>
                         <div class="collapsible-body">
-                            <ul>
+                            <ul id="dhynmenu">
                             <?php
                                 if ($_SESSION['user_data']['ugroup'] == 1 || $_SESSION['user_data']['access'] == 0) {
                                     $result = $conn->query("SELECT pcode, pname FROM projects WHERE status = 1 ORDER BY priority DESC");

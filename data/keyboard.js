@@ -1,5 +1,5 @@
 
-$(document).bind('keydown', 'f1', function assets() {
+$(document).bind('keydown', 'alt+n', function assets() {
 	console.log(projectData);
 
 
@@ -8,6 +8,61 @@ $(document).bind('keydown', 'f1', function assets() {
 	$('#add_new_task_pcode').val(projectData.pCode);
 	$('#add_task').modal().modal('open');
 });
+
+
+//render folder
+$(document).bind('keydown', 'alt+r', function assets() {
+	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=rf";
+	$.get(url, function(data){
+		if (Cookies.get('dev') == 1) {
+			console.log(data);
+		}
+	})
+});
+
+
+//scene folder
+$(document).bind('keydown', 'alt+s', function assets() {
+	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=sf";
+	$.get(url, function(data){
+		if (Cookies.get('dev') == 1) {
+			console.log(data);
+		}
+	})
+});
+
+//final folder
+$(document).bind('keydown', 'alt+f', function assets() {
+	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=ff";
+	$.get(url, function(data){
+		if (Cookies.get('dev') == 1) {
+			console.log(data);
+		}
+	})
+});
+
+
+//bg folder
+$(document).bind('keydown', 'alt+b', function assets() {
+	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=bf";
+	$.get(url, function(data){
+		if (Cookies.get('dev') == 1) {
+			console.log(data);
+		}
+	})
+});
+
+
+//sync folder
+$(document).bind('keydown', 'alt+c', function assets() {
+	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=syf";
+	$.get(url, function(data){
+		if (Cookies.get('dev') == 1) {
+			console.log(data);
+		}
+	})
+});
+
 
 /*
 $(document).bind('keydown', 'space', function assets() {

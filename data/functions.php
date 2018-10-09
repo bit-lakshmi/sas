@@ -9,6 +9,11 @@ function update_client($conn){
 	$result = $conn->query("UPDATE sessions SET isupdate = '1' WHERE NOT uid = '{$uid}'");
 }
 
+function update_menu($conn){
+	$uid = $_SESSION['user_data']['id'];
+	$result = $conn->query("UPDATE sessions SET menu = '1'");
+}
+
 switch ($_GET["fname"]) {
 	case "login":
 		$uid = $_POST['uid'];
@@ -327,29 +332,67 @@ switch ($_GET["fname"]) {
 			}
 			break;
 
+
+		case 'dynmenu':
+							if ($_SESSION['user_data']['ugroup'] == 1 || $_SESSION['user_data']['access'] == 0) {
+									$result = $conn->query("SELECT pcode, pname FROM projects WHERE status = 1 ORDER BY priority DESC");
+									if ($result->rowCount() > 0) {
+											$x = 0;
+											while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+													printf(' <li class="sasmenu sascomp"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],$_SESSION['user_data']['ugroup'], $row['pname']);
+													$x += 1;
+											}
+									}
+							}
+							if ($_SESSION['user_data']['ugroup'] == 2 || $_SESSION['user_data']['access'] == 0) {
+								 $result = $conn->query("SELECT pcode, pname FROM projects WHERE anim = 0 OR mtr = 0");
+									if ($result->rowCount() > 0) {
+										$x = 0;
+										while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+												printf(' <li class="sasmenu sasmtr"><a id="loadtask" data-pcode="%s" data-ugroup="%s" href="#!">%s</a></li>',$row['pcode'],'2', $row['pname']);
+												$x += 1;
+										}
+								}
+						}
+		break;
+
 		case 'isupdate':
 			$uid = $_SESSION['user_data']['id'];
 			$result = $conn->query("SELECT * FROM sessions WHERE uid ='{$uid}'");
 			$isclientupdate = false;
+			$ismenuupdate = false;
+			$isupdate = false;
 			if ($result->rowCount() > 0) {
+					$isupdate = true;
 				while($row = $result->fetch(PDO::FETCH_ASSOC)) {
-					if (isdev()) {
-						echo "isupdate : <pre>";
-						print_r($row);
-					}
+
 			        if($row['isupdate'] == '1'){
 			        	$isclientupdate = true;
 			        }
+							if($row['menu'] == '1'){
+			        	$ismenuupdate = true;
+			        }
 			    }
 			}
-			if ($isclientupdate) {
-				$result = array("code"=> "1", "CURTASK" => $_SESSION['CURTASK']);
-			    echo json_encode($result);
-				$conn->query("UPDATE sessions SET isupdate = '0' WHERE uid = '{$uid}'");
+
+			if ($isupdate) {
+					if ($isclientupdate) {
+							$sql = "UPDATE sessions SET isupdate = '0' WHERE uid = '{$uid}'";
+							if ($conn->query($sql)) {
+								echo json_encode(array("code"=> 1, "CURTASK" => $_SESSION['CURTASK']));
+							}
+					}
+					if ($ismenuupdate) {
+						 $sql = "UPDATE sessions SET isupdate = '0', menu = '0' WHERE uid = '{$uid}'";
+	 				  if ($conn->query($sql)) {
+	 				  	echo json_encode(array("code"=> 1, "CURTASK" => $_SESSION['CURTASK'], "menu"=> 1));
+	 				  }
+					}
 			}else{
-				$result = array("code"=> "0");
-			    echo json_encode($result);
+			    echo json_encode(array("code"=> 0));
 			}
+
+			//echo json_encode(array("code"=> 1, "full"=> 1));
 
 
 			break;
@@ -378,6 +421,7 @@ switch ($_GET["fname"]) {
 					$res = add_log($log_text, $conn, $_POST['pcode'],$sname);
 				}
 				update_client($conn);
+				update_menu($conn);
 				echo json_encode(array('log' => $res, "status" => 1 ));
 
 			}
@@ -449,6 +493,7 @@ switch ($_GET["fname"]) {
 			$result = $conn->query("INSERT INTO projects (pstype, pname, pcode, pdisk_name, orderby) VALUES ('{$ptype}', '{$pname}', '{$pcode}', '{$fpath}', '{$pno}')");
 			if($result){
 				update_client($conn);
+				update_menu($conn);
 				echo "1";
 			}
 		break;

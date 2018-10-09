@@ -67,7 +67,8 @@ var sttable = '';
     });
 
     //task page open
-     $("[id='loadtask']").click(function(e) {
+        $(document).on('click', '[id="loadtask"]', function(e) {
+     //$("[id='loadtask']").click(function(e) {
         e.preventDefault();
         location.hash = $(this).data("pcode");
         var ugroup = $(this).data("ugroup");
@@ -189,11 +190,31 @@ $j(document).ready(function() {
         });
      }
 
+     function updateMenu() {
+       $.get("/data/functions?fname=dynmenu", function(data){
+         $("#dhynmenu").html(data);
+
+       });
+
+     }
+
     setInterval(function(){
         $j.get("/data/functions?fname=isupdate", function(data){
-            data = jQuery.parseJSON(data);
+            if (Cookies.get('dev') == 1) {
+                console.info(data);
+            }
+            if (data != "") {
+              data = jQuery.parseJSON(data);
+            }
             if (data.code == '1') {
              updateui();
+            }
+            if (data.menu == '1') {
+             updateMenu();
+            }
+
+            if (data.full == '1') {
+              location.reload(true);
             }
         })
 
@@ -348,10 +369,10 @@ $j(document).ready(function() {
         //$j('#textmodel').modal('open');
      })
 
-     /*$j(document).on('mouseenter', '.current-task', function() {
+     $j(document).on('mouseenter', '.current-task', function() {
         var psname = $(this).data(psname);
         projectData.sname = psname.psname;
-      })*/
+      })
 
 
 
@@ -473,7 +494,7 @@ $j(document).ready(function() {
 
     $j(document).on('click', '#fpath', function() {
         $('#task_modal').modal().modal('close');
-        var url = "cgi/folder-handel.py?host=" + $(this).data("host") + "&pdiskn=" + $(this).data("pdiskn") + "&psname=" + $(this).data("psname");
+        var url = "cgi/folder-handel.py?host=" + $(this).data("host") + "&pdiskn=" + $(this).data("pdiskn") + "&psname=" + $(this).data("psname") + "&t=rf";
         $.get(url, function(data){
           if (Cookies.get('dev') == 1) {
             console.log(data);
