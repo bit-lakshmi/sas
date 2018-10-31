@@ -14,6 +14,12 @@ MPATH = "D:/SAS-Backup/Punchtantra stories/Stories/"
 if PTYPE == "1":
     MPATH = "D:/SAS-Backup/Occasional Films/"
 
+if PTYPE == "2":
+    MPATH = "D:/SAS-Backup/Hyderabad Project/"
+
+if PTYPE == "3":
+    MPATH = "D:/SAS-Backup/Oxford Project/"
+
 NSTORY = MPATH + PNO + " " + PNAME
 
 NSTORY = os.path.normpath(NSTORY)
@@ -25,12 +31,12 @@ if not os.path.exists(NSTORY):
     SBM = os.path.normpath(NSTORY + "/01 Story Board")
     os.makedirs(SBM)
     SB = os.path.normpath(SBM + "/SB")
-    os.makedirs(SB) 
+    os.makedirs(SB)
     BGs = os.path.normpath(SBM + "/BGs")
     os.makedirs(BGs)
     PSD = os.path.normpath(BGs + "/PSD")
     os.makedirs(PSD)
-    JPG = os.path.normpath(BGs + "/JPG")
+    JPG = os.path.normpath(BGs + "/PNG")
     os.makedirs(JPG)
 
 

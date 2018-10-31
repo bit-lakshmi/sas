@@ -26,6 +26,14 @@ if SFOLDER[0] == 1:
     MPATH = "X:\Occasional Films"
     MPATH_NAME = "Occasional Films"
 
+if SFOLDER[0] == 2:
+    MPATH = "X:\Hyderabad Project"
+    MPATH_NAME = "Hyderabad Project"
+
+if SFOLDER[0] == 3:
+    MPATH = "X:\Oxford Project"
+    MPATH_NAME = "Oxford Project"
+
 
 
 SEL_STORY = pdisk

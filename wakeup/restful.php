@@ -4,7 +4,7 @@ $dev = 0;
 
 
 error_reporting($dev);
-$version = "2.2.8";
+$version = "2.2.9";
 
 
 
@@ -78,20 +78,26 @@ function missingDate()
   $timeFrom = strtotime($msDate);
   $timeTo = strtotime($mtDate);
   global $conn;
-  $sql = "SELECT tdate FROM attendance WHERE uid = '{$_SESSION['userData']['username']}' AND tdate BETWEEN '{$msDate}' AND '{$mtDate}' ";
+  $sql = "SELECT tdate, dtype FROM attendance WHERE uid = '{$_SESSION['userData']['username']}' AND tdate BETWEEN '{$msDate}' AND '{$mtDate}' ";
   $arrMyDates = array();
   $result = $conn->query($sql);
   if ($result->num_rows > 0) {
       while($row = $result->fetch_assoc()) {
-        array_push($arrMyDates, $row['tdate']);
+        if ($row['dtype'] != "off" || $row['dtype'] != "holi") {
+          array_push($arrMyDates, $row['tdate']);
+        }
       }
   }
   $arrDateSpan = array();
   for ($n = $timeFrom; $n <= $timeTo; $n += 86400)
   {
-  $strDate = date("Y-m-d", $n);
-  array_push($arrDateSpan, $strDate);
+    $issunday = date("D", $n);
+    $strDate = date("Y-m-d", $n);
+    if ($issunday != "Sun") {
+      array_push($arrDateSpan, $strDate);
+    }
   }
+  $arrDateSpan = array_diff($arrDateSpan, array("2018-10-02"));
   $arrMissingDates = array_diff($arrDateSpan, $arrMyDates);
   return $arrMissingDates;
 }
@@ -282,6 +288,10 @@ if(isset($_GET['api'])){
 
 
       case 'todayim':
+                  if(!$_SESSION['login']){
+                      echo json_encode(array('status' => 0, 'error'=> 1, 'text'=> 'Access not allowed.'));
+                      exit();
+                  }
                   $sql = "SELECT * FROM  attendance WHERE  uid = '".$_SESSION['userData']['username']."' AND  tdate =  '".$tdate."'";
                   $isin = TRUE;
                   $result = $conn->query($sql);
@@ -308,12 +318,7 @@ if(isset($_GET['api'])){
 
 
         case 'test':
-          //print "<pre>";
-          $today      = new DateTime('now');
-          $tomorrow   = new DateTime('tomorrow');
-          $difference = $today->diff($tomorrow);
-
-          echo $difference->format('%h hours %i minutes %s seconds until tomorrow');
+          print date('Y-m-d', strtotime("18-10-2018"));
 
 
         break;
@@ -335,6 +340,30 @@ if(isset($_GET['api'])){
                 $conn->close();
                 exit();
         break;
+
+
+        case 'addoff':
+              if(!$_SESSION['login']){
+                  echo json_encode(array('status' => 0, 'error'=> 1, 'text'=> 'Access not allowed.'));
+                  exit();
+              }
+              $tdate = date('Y-m-d', strtotime($_POST['date']));
+              $sql = "SELECT tdate FROM  attendance WHERE  uid = '".$_SESSION['userData']['username']."' AND  tdate =  '".$tdate."'";
+              $result = $conn->query($sql);
+              if (!$result->num_rows > 0) {
+                $sql = "INSERT INTO attendance (uid, comment, tdate, dtype) VALUES ('".$_SESSION['userData']['username']."', '".$_POST['comment']."', '".$tdate."', '".$_POST['type']."')";
+              }else {
+                $sql = "UPDATE attendance SET comment='". $_POST['comment'] ."', dtype = '". $_POST['type'] ."' WHERE uid = '".$_SESSION['userData']['username']."' AND tdate = '{$tdate }'";
+              }
+              $result = $conn->query($sql);
+               if($result){
+                   echo json_encode(array('status' => 1, 'error'=> 0, 'text'=> "Date update successfully."));
+                 }else {
+                   echo json_encode(array('status' => 0, 'error'=> 1, 'text'=> "Error: " . $result . "<br>" . $conn->error));
+               }
+               $conn->close();
+             exit();
+          break;
 
 
     default:
@@ -626,12 +655,12 @@ if(isset($_GET['page'])){
               $timeFrom = strtotime($msDate);
               $timeTo = strtotime($mtDate);
               global $conn;
-              $sql = "SELECT intime, outtime, tdate, comment FROM attendance WHERE uid = '{$_SESSION['userData']['username']}' AND tdate BETWEEN '{$msDate}' AND '{$mtDate}' ";
+              $sql = "SELECT intime, outtime, tdate, comment, dtype FROM attendance WHERE uid = '{$_SESSION['userData']['username']}' AND tdate BETWEEN '{$msDate}' AND '{$mtDate}' ORDER BY dtype DESC";
               $result = $conn->query($sql);
               if ($result->num_rows > 0) {
                 echo '<div class="row"><div class="col s12 m6">';
                   while($row = $result->fetch_assoc()) {
-                    echo '<div class="card grey lighten-5">
+                    echo '<div class="card '.($row['dtype'] == "off" ? "red" : "gray").' lighten-5">
                               <div class="card-content black-text">
                                   <span class="card-title">'.$row["tdate"].'</span>
                                   <p>'.$row["intime"].' | '.$row["outtime"].'</p>
@@ -640,8 +669,43 @@ if(isset($_GET['page'])){
                           </div>';
                   }
                   echo '</div></div>';
+                  echo '<div class="fixed-action-btn"><a id="pageload" data-page="addoff" class="btn-floating btn-large waves-effect waves-light light-blue darken-2 right"><i class="mdi mdi-plus"></i></a></div>';
               }
         break;
+
+
+        case 'addoff':
+          ?>
+                    <div class="row">
+                       <div class="input-field col s12">
+                         <input id="offdate" type="date" class="validate">
+                       </div>
+                   </div>
+                   <label>Type of day</label>
+                    <select id="offdaytype" class="browser-default">
+                      <option value="" disabled selected>Choose your option</option>
+                      <option value="off">Off</option>
+                      <option value="holi">Holiday</option>
+                      <option value="sun">Sunday</option>
+                    </select>
+                  <div class="row">
+                     <div class="input-field col s12">
+                       <input id="offtext" type="text" class="validate">
+                       <label>Comment</label>
+                     </div>
+                 </div>
+                 <div class="row">
+                  <div class="input-field col s12">
+                     <div align="center">
+                    <a id="addoff" class="waves-effect waves-light btn-large btn green">Save</a>
+                  </div>
+                  </div>
+                </div>
+
+
+
+          <?php
+          break;
 
 
 

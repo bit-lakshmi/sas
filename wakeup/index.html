@@ -39,7 +39,7 @@
        });
       }
 
-      var isDev = 1;
+      var isDev = 1 ;
      </script>
    </head>
 
@@ -370,6 +370,29 @@
                 notify(data.text);
                 pageLoad('attend');
               }
+          });
+      });
+
+
+      // add off comment
+
+      $(document.body).on('click', '#addoff' ,function(){
+          showLoder(1);
+          $.post(apiUrl + "?api=addoff",
+          {
+              date: $("#offdate").val(),
+              type: $("#offdaytype").val(),
+              comment: $("#offtext").val()
+          },
+          function(data, status){
+            showLoder(0);
+            var data = JSON.parse(data);
+            if (data.error) {
+               notify(data.text);
+            }else {
+               notify(data.text);
+               pageLoad('attend');
+            }
           });
       });
 

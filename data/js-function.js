@@ -411,11 +411,23 @@ $j(document).ready(function() {
         var url = "/data/page?pname=sprojects&odby=" + $(this).data("name");
         Cookies.set('cpage', 'sprojects');
         Cookies.set('cpcode', '');
+        Cookies.set('sprojectodby', $(this).data("name"));
         $.get(url, function(data){
             $("#page").html(data);
         })
 
      })
+
+     $j(document).on('click', '#sprojectfilter', function() {
+         var url = "/data/page?pname=sprojects&fillter=" + $(this).data("name") + "&spname=" + $(this).data("spname");
+         Cookies.set('cpage', 'sprojects');
+         Cookies.set('cpcode', '');
+         Cookies.set('sprojectfilter', $(this).data("name"));
+         $.get(url, function(data){
+             $("#page").html(data);
+         })
+
+      })
 
 
 

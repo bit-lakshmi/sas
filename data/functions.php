@@ -10,7 +10,6 @@ function update_client($conn){
 }
 
 function update_menu($conn){
-	$uid = $_SESSION['user_data']['id'];
 	$result = $conn->query("UPDATE sessions SET menu = '1'");
 }
 
@@ -453,9 +452,18 @@ switch ($_GET["fname"]) {
 	                                	<div class="col s6">
 		                                	<label>Story type</label>
 		                                    <select class="browser-default" id="story_type">
-		                                        <option value="">Choose your option</option>
-		                                        <option value="0">Punchtantra stories</option>
-		                                        <option value="1">Occasional Films</option>
+																					 <option value="">Choose your option</option>
+																						<?php
+																							$result = $conn->query("SELECT value FROM options WHERE name ='projects'");
+																							if ($result->rowCount() > 0) {
+																								while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+																										$projectname = explode(';', $row['value']);
+																										foreach ($projectname as $key => $value) {
+																											echo sprintf('<option value="%s">%s</option>', $key, $value);
+																										}
+																							   }
+																							}
+																						 ?>
 		                                    </select>
 		                                </div>
 	                                    <div class="input-field col s6">

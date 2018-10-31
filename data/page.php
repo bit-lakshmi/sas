@@ -234,7 +234,17 @@ switch ($_GET["pname"]) {
             <div class="col s12">
                         <div class="card invoices-card">
                                 <div class="card-content">
-                                    <span class="card-title">Projects List | <a href="#add_project" class="modal-trigger card-refresh"><i id="add_project" class="modal-trigger material-icons">playlist_add</i></a></span>
+                                    <span class="card-title"><?php echo ($_GET['spname'] ? $_GET['spname'] : "PUNCHTANTRA STORIES"); ?> - Projects List | <a href="#add_project" class="modal-trigger card-refresh"><i id="add_project" class="modal-trigger material-icons">playlist_add</i></a> | Fillter | 	<?php
+																				$result = $conn->query("SELECT value FROM options WHERE name ='projects'");
+																				if ($result->rowCount() > 0) {
+																					while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+																							$projectname = explode(';', $row['value']);
+																							foreach ($projectname as $key => $value) {
+																								echo sprintf('<a href="#add_project" id="sprojectfilter" data-spname="%s" data-name="%s" class="modal-trigger card-refresh">%s</a> &#09;',$value, $key, $value);
+																							}
+																					 }
+																				}
+																			 ?></span>
                                 <table class="responsive-table bordered">
                                     <thead>
                                         <tr>
@@ -272,8 +282,22 @@ switch ($_GET["pname"]) {
                                         if(isset($_GET['odby'])){
                                             $result = $conn->query("SELECT * FROM projects ORDER BY {$_GET['odby']} DESC");
                                         }
+																				if(isset($_COOKIE['sprojectodby'])){
+                                            $result = $conn->query("SELECT * FROM projects ORDER BY {$_COOKIE['sprojectodby']} DESC");
+                                        }
                                         if ($result->rowCount() > 0) {
                                         while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+																						$fillter = 0;
+																						if (isset($_GET['fillter'])) {
+																							$fillter = $_GET['fillter'];
+																						}
+
+																						if (isset($_COOKIE['sprojectfilter'])) {
+																							 $fillter = $_COOKIE['sprojectfilter'];
+																						}
+																						if ($row['pstype'] != $fillter) {
+																							continue;
+																						}
                                             echo "<tr>";
 
                                             printf('<td>%s</td>', $row['pcode']);
