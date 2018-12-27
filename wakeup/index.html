@@ -27,6 +27,10 @@
           color: #ffffff !important;
           border-radius: 10px !important;
      }
+
+     .btn-marg {
+       margin: 2em !important;
+     }
      </style>
      <script type="text/javascript">
      if ('serviceWorker' in navigator) {
@@ -39,7 +43,7 @@
        });
       }
 
-      var isDev = 1 ;
+      var isDev = 0 ;
      </script>
    </head>
 
@@ -199,6 +203,9 @@
           $('.button-collapse').sideNav('hide');
           var pname = $(this).data('page');
           pname = apiUrl + "?page=" + pname;
+          if ($(this).data('filter') != "undefined") {
+            pname +=  "&filter=" + $(this).data('filter');
+          }
           $.get(pname, function(data, status){
             $("#page").html(data);
             $("#loader").hide();

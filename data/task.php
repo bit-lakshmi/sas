@@ -103,7 +103,8 @@ if ($result->rowCount() > 0) {
                                         <a href="#add_task" class="modal-trigger card-refresh"><i id="t_add_task" data-pname="<?php echo $P_DATA[0]['pname'] ?>" data-pcode="<?php echo $P_DATA[0]['pcode'] ?>" class="modal-trigger material-icons">playlist_add</i></a>
 
                                 </div>
-                                    <span class="card-title"><?php echo $P_DATA[0]['pname'] ?></span>
+                                    <span class="card-title"><?php echo getProjectType($P_DATA[0]['pstype']) ." - ". $P_DATA[0]['pname'];
+                                     ?></span>
                                 <table id="taskstable" class="display responsive-table datatable-example">
                                     <thead>
                                         <tr>

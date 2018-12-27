@@ -654,6 +654,15 @@ if(isset($_GET['page'])){
               $mtDate = date('Y-m-d');
               $timeFrom = strtotime($msDate);
               $timeTo = strtotime($mtDate);
+              if ($_GET['filter'] == 'pmonth') {
+                $msDate = date('Y-m-01', strtotime("-1 Month"));
+                $mtDate = date('Y-m-d', strtotime("-1 Month"));
+              }
+              if ($_GET['filter'] == 'nmonth') {
+                $msDate = date('Y-m-01', strtotime("+1 Month"));
+                $mtDate = date('Y-m-d', strtotime("+1 Month"));
+              }
+              echo '<div class="row"><div class="col s6 center-align"><a id="pageload" data-page="missDays" data-filter="pmonth" class="waves-effect waves-light btn-small btn green btn-marg"><< '.$msDate.'</a><a id="pageload" data-page="missDays" data-filter="nmonth" class="waves-effect waves-light btn-small btn green btn-marg">'.$mtDate.' >></a></div></div>';
               global $conn;
               $sql = "SELECT intime, outtime, tdate, comment, dtype FROM attendance WHERE uid = '{$_SESSION['userData']['username']}' AND tdate BETWEEN '{$msDate}' AND '{$mtDate}' ORDER BY dtype DESC";
               $result = $conn->query($sql);

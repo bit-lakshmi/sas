@@ -306,12 +306,16 @@ switch ($_GET["pname"]) {
                                             printf('<td>%s</td>', $row['pname']);
 
                                             $sql_col = "sb";
-                                            if($row[$sql_col] == 1){
-                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="2"><a class="waves-effect waves-light btn green">Done</a></td>', $row['pcode'],$sql_col);
-                                            }else if ($row[$sql_col] == 2){
-                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="0"><a class="waves-effect waves-light btn grey">None</a></td>', $row['pcode'],$sql_col);
-                                            } else {
-                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="1"><a class="waves-effect waves-light btn amber">Check</a></td>', $row['pcode'],$sql_col);
+                                            if($row[$sql_col] == 3){
+                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="0"><a class="waves-effect waves-light btn green">Done</a></td>', $row['pcode'],$sql_col);
+                                            }else if ($row[$sql_col] == 0){
+                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="1"><a class="waves-effect waves-light btn grey">None</a></td>', $row['pcode'],$sql_col);
+																						}else if ($row[$sql_col] == 1){
+                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="15"><a class="waves-effect waves-light btn blue">WIP</a></td>', $row['pcode'],$sql_col);
+                                            }else if ($row[$sql_col] == 15){
+                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="2"><a class="waves-effect waves-light btn lime">Ready</a></td>', $row['pcode'],$sql_col);
+                                            }else if  ($row[$sql_col] == 2){
+                                                printf('<td id="proupdate" data-ugroup="1" data-pcode="%s" data-colname="%s" data-colvalue="3"><a class="waves-effect waves-light btn amber">Check</a></td>', $row['pcode'],$sql_col);
                                             }
 
 

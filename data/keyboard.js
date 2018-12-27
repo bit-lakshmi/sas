@@ -1,5 +1,5 @@
 
-$(document).bind('keydown', 'alt+n', function assets() {
+$(document).bind('keydown', 'ctrl+alt+n', function assets() {
 	console.log(projectData);
 
 
@@ -11,7 +11,7 @@ $(document).bind('keydown', 'alt+n', function assets() {
 
 
 //render folder
-$(document).bind('keydown', 'alt+r', function assets() {
+$(document).bind('keydown', 'ctrl+alt+r', function assets() {
 	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=rf";
 	$.get(url, function(data){
 		if (Cookies.get('dev') == 1) {
@@ -22,7 +22,7 @@ $(document).bind('keydown', 'alt+r', function assets() {
 
 
 //scene folder
-$(document).bind('keydown', 'alt+s', function assets() {
+$(document).bind('keydown', 'ctrl+alt+s', function assets() {
 	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=sf";
 	$.get(url, function(data){
 		if (Cookies.get('dev') == 1) {
@@ -32,7 +32,7 @@ $(document).bind('keydown', 'alt+s', function assets() {
 });
 
 //final folder
-$(document).bind('keydown', 'alt+f', function assets() {
+$(document).bind('keydown', 'ctrl+alt+f', function assets() {
 	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=ff";
 	$.get(url, function(data){
 		if (Cookies.get('dev') == 1) {
@@ -43,7 +43,7 @@ $(document).bind('keydown', 'alt+f', function assets() {
 
 
 //bg folder
-$(document).bind('keydown', 'alt+b', function assets() {
+$(document).bind('keydown', 'ctrl+alt+b', function assets() {
 	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=bf";
 	$.get(url, function(data){
 		if (Cookies.get('dev') == 1) {
@@ -54,7 +54,7 @@ $(document).bind('keydown', 'alt+b', function assets() {
 
 
 //sync folder
-$(document).bind('keydown', 'alt+c', function assets() {
+$(document).bind('keydown', 'ctrl+alt+c', function assets() {
 	var url = "cgi/folder-handel.py?host=" + Cookies.get('host') + "&pdiskn=" + projectData.pDiskName + "&psname=" + projectData.sname + "&t=syf";
 	$.get(url, function(data){
 		if (Cookies.get('dev') == 1) {

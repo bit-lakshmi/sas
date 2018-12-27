@@ -116,6 +116,21 @@ function getprojectdata($type, $pcode){
 
 }
 
+function getProjectType($code)
+{
+    $sql = "SELECT value FROM options WHERE name='projects'";
+    global $conn;
+    $result = $conn->query($sql);
+    $P_TYPE = array();
+    if ($result->rowCount() > 0) {
+            while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+
+                $P_TYPE[] = explode(";", $row['value']);
+            }
+    }
+    return $P_TYPE[0][$code];
+}
+
 function add_log($ltext, $conn, $pcode, $pname){
     if (!isdev()) {
   		$uid = $_SESSION['user_data']['uname'];
